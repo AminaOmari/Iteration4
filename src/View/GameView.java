@@ -162,7 +162,7 @@ public class GameView extends JFrame {
 		JPanel mainContent = new JPanel();
 		mainContent.setLayout(new BoxLayout(mainContent, BoxLayout.Y_AXIS));
 		mainContent.setOpaque(false);
-		mainContent.setBorder(BorderFactory.createEmptyBorder(10, 80, 40, 80));
+		mainContent.setBorder(BorderFactory.createEmptyBorder(10, 20, 40, 20));
 
 		mainContent.add(Box.createVerticalGlue());
 
@@ -335,13 +335,13 @@ public class GameView extends JFrame {
 		gbc.insets = new Insets(25, 0, 10, 0);
 		startButton = createGradientButton("▷ Start Game", new Color(170, 40, 180), new Color(200, 60, 210));
 		startButton.setFont(new Font("Segoe UI", Font.BOLD, 18));
-		startButton.setPreferredSize(new Dimension(200, 80));
+		startButton.setPreferredSize(new Dimension(200, 65));
 		formCard.add(startButton, gbc);
 
 		gbc.gridy++;
 		gbc.insets = new Insets(0, 0, 0, 0);
 		demoButton = createGradientButton("🤖 Play with AI", new Color(60, 60, 80), new Color(80, 80, 100));
-		demoButton.setPreferredSize(new Dimension(200, 80));
+		demoButton.setPreferredSize(new Dimension(200, 65));
 		formCard.add(demoButton, gbc);
 
 		gridPanel.add(formCard);
@@ -410,7 +410,14 @@ public class GameView extends JFrame {
 		});
 
 		mainContent.add(Box.createVerticalGlue());
-		startPanel.add(mainContent, BorderLayout.CENTER);
+
+		JScrollPane scrollFrame = new JScrollPane(mainContent);
+		scrollFrame.setBorder(null);
+		scrollFrame.setOpaque(false);
+		scrollFrame.getViewport().setOpaque(false);
+		scrollFrame.getVerticalScrollBar().setUnitIncrement(16);
+
+		startPanel.add(scrollFrame, BorderLayout.CENTER);
 	}
 
 	public void showHistoryView() {

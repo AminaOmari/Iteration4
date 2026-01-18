@@ -34,7 +34,7 @@ public class HistoryView extends JPanel {
         contentPanel = new JPanel();
         contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
         contentPanel.setOpaque(false);
-        contentPanel.setBorder(BorderFactory.createEmptyBorder(20, 60, 40, 60));
+        contentPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 40, 20));
 
         // Header
         addHeader();

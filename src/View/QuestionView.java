@@ -37,7 +37,7 @@ public class QuestionView extends JPanel {
         contentPanel = new JPanel();
         contentPanel.setLayout(new BorderLayout());
         contentPanel.setOpaque(false);
-        contentPanel.setBorder(BorderFactory.createEmptyBorder(20, 60, 40, 60));
+        contentPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 40, 20));
 
         // Top Section (Header + New Button)
         JPanel topSection = createHeaderSection();
