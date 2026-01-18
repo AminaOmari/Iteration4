@@ -145,169 +145,245 @@ public class GameView extends JFrame {
 
 	private void createStartPanel() {
 		// Custom panel with animated background
-		startPanel = new JPanel(new GridBagLayout()) {
-			private java.util.List<Particle> particles = new java.util.ArrayList<>();
-			private Timer animTimer;
-
-			{
-				// Initialize particles
-				for (int i = 0; i < 30; i++)
-					particles.add(new Particle(1200, 800));
-
-				// Start animation loop
-				animTimer = new Timer(30, e -> {
-					for (Particle p : particles)
-						p.update(getWidth(), getHeight());
-					repaint();
-				});
-				animTimer.start();
-			}
-
+		// Custom panel with modern dark gradient
+		startPanel = new JPanel(new BorderLayout()) {
 			@Override
 			protected void paintComponent(Graphics g) {
 				super.paintComponent(g);
 				Graphics2D g2d = (Graphics2D) g;
 				g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-				// Modern purple-blue gradient
-				GradientPaint gp = new GradientPaint(0, 0, new Color(30, 20, 60), 0, getHeight(),
-						new Color(50, 35, 90));
+				// Deep purple background (Matches design)
+				GradientPaint gp = new GradientPaint(0, 0, new Color(30, 10, 50), 0, getHeight(),
+						new Color(20, 5, 30));
 				g2d.setPaint(gp);
 				g2d.fillRect(0, 0, getWidth(), getHeight());
-
-				// Draw particles
-				for (Particle p : particles)
-					p.draw(g2d);
 			}
 		};
+
+		// 1. Header Navigation
+		JPanel header = new JPanel(new BorderLayout());
+		header.setOpaque(false);
+		header.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 40));
+
+		JLabel logo = new JLabel("💣 MineSweeper");
+		logo.setFont(new Font("Segoe UI", Font.BOLD, 26));
+		logo.setForeground(Color.WHITE);
+		header.add(logo, BorderLayout.WEST);
+
+		JPanel nav = new JPanel(new FlowLayout(FlowLayout.RIGHT, 15, 0));
+		nav.setOpaque(false);
+		nav.add(createNavButton("🏠 Home", true));
+
+		JButton manageBtn = createNavButton("Questions & History", false);
+		manageBtn.addActionListener(e -> showManagementView());
+		nav.add(manageBtn);
+
+		JButton statsBtn = createNavButton("Statistics", false);
+		statsBtn.addActionListener(e -> showStatisticsView());
+		nav.add(statsBtn);
+
+		header.add(nav, BorderLayout.EAST);
+		startPanel.add(header, BorderLayout.NORTH);
+
+		// 2. Main Layout
+		JPanel mainContent = new JPanel();
+		mainContent.setLayout(new BoxLayout(mainContent, BoxLayout.Y_AXIS));
+		mainContent.setOpaque(false);
+		mainContent.setBorder(BorderFactory.createEmptyBorder(10, 80, 40, 80));
+
+		// Hero Title
+		JLabel title = new JLabel("Welcome to MineSweeper");
+		title.setFont(new Font("Segoe UI", Font.BOLD, 48));
+		title.setForeground(Color.WHITE);
+		title.setAlignmentX(Component.CENTER_ALIGNMENT);
+		mainContent.add(title);
+
+		JLabel subtitle = new JLabel("An exciting strategy game for two players with questions and surprises");
+		subtitle.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+		subtitle.setForeground(new Color(200, 200, 220));
+		subtitle.setAlignmentX(Component.CENTER_ALIGNMENT);
+		mainContent.add(subtitle);
+
+		mainContent.add(Box.createVerticalStrut(40));
+
+		// Two-Column Grid
+		JPanel gridPanel = new JPanel(new GridLayout(1, 2, 40, 0));
+		gridPanel.setOpaque(false);
+		gridPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+		// --- LEFT COLUMN: Start Game Form ---
+		JPanel formCard = createCardPanel();
+		formCard.setLayout(new GridBagLayout());
+		formCard.setBorder(BorderFactory.createEmptyBorder(30, 30, 30, 30));
 
 		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.insets = new Insets(12, 15, 12, 15);
 		gbc.fill = GridBagConstraints.HORIZONTAL;
-
-		// Title with icon
-		JLabel titleLabel = new JLabel("MineSweeper - Trivia Edition", SwingConstants.CENTER);
-		titleLabel.setFont(new Font("Arial", Font.BOLD, 52));
-		titleLabel.setForeground(Color.WHITE);
+		gbc.insets = new Insets(10, 0, 5, 0);
 		gbc.gridx = 0;
 		gbc.gridy = 0;
-		gbc.gridwidth = 2;
-		startPanel.add(titleLabel, gbc);
+		gbc.weightx = 1.0;
 
-		// Subtitle with modern styling
-		JLabel subtitleLabel = new JLabel("Two Player Cooperative Game", SwingConstants.CENTER);
-		subtitleLabel.setFont(new Font("Arial", Font.PLAIN, 20));
-		subtitleLabel.setForeground(new Color(180, 180, 220));
-		gbc.gridy = 1;
-		startPanel.add(subtitleLabel, gbc);
+		JLabel formTitle = new JLabel("▷ Start New Game");
+		formTitle.setFont(new Font("Segoe UI", Font.BOLD, 22));
+		formTitle.setForeground(Color.WHITE);
+		formCard.add(formTitle, gbc);
 
-		// Team badge
-		JLabel teamLabel = new JLabel("Team Rhino 🦏", SwingConstants.CENTER);
-		teamLabel.setFont(new Font("Arial", Font.BOLD, 16));
-		teamLabel.setForeground(new Color(150, 150, 200));
-		gbc.gridy = 2;
-		startPanel.add(teamLabel, gbc);
+		gbc.gridy++;
+		gbc.insets = new Insets(20, 0, 5, 0);
+		formCard.add(createLabel("Player 1"), gbc);
+		gbc.gridy++;
+		gbc.insets = new Insets(0, 0, 10, 0);
+		player1NameField = createStyledTextField("Enter player 1 name");
+		formCard.add(player1NameField, gbc);
 
-		// Spacer
-		gbc.gridy = 3;
-		startPanel.add(Box.createVerticalStrut(40), gbc);
+		gbc.gridy++;
+		gbc.insets = new Insets(10, 0, 5, 0);
+		formCard.add(createLabel("Player 2"), gbc);
+		gbc.gridy++;
+		gbc.insets = new Insets(0, 0, 20, 0);
+		player2NameField = createStyledTextField("Enter player 2 name");
+		formCard.add(player2NameField, gbc);
 
-		// Player input panel with rounded style
-		JPanel inputPanel = new JPanel(new GridBagLayout()) {
-			@Override
-			protected void paintComponent(Graphics g) {
-				Graphics2D g2d = (Graphics2D) g;
-				g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-				g2d.setColor(new Color(45, 35, 75, 200));
-				g2d.fillRoundRect(0, 0, getWidth(), getHeight(), 20, 20);
-			}
-		};
-		inputPanel.setOpaque(false);
-		inputPanel.setBorder(BorderFactory.createEmptyBorder(30, 40, 30, 40));
+		// Difficulty Selector
+		gbc.gridy++;
+		gbc.insets = new Insets(0, 0, 5, 0);
+		formCard.add(createLabel("Select Difficulty"), gbc);
 
-		GridBagConstraints inputGbc = new GridBagConstraints();
-		inputGbc.insets = new Insets(10, 10, 10, 10);
-		inputGbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.gridy++;
+		gbc.insets = new Insets(0, 0, 15, 0);
+		JPanel diffToggle = new JPanel(new GridLayout(1, 3, 10, 0));
+		diffToggle.setOpaque(false);
 
-		// Player 1 name
-		inputGbc.gridwidth = 1;
-		inputGbc.gridy = 0;
-		inputGbc.gridx = 0;
-		JLabel p1Label = createModernLabel("👤 Player 1:");
-		inputPanel.add(p1Label, inputGbc);
-
-		inputGbc.gridx = 1;
-		player1NameField = createModernTextField("Enter Player 1 Name");
-		inputPanel.add(player1NameField, inputGbc);
-
-		// Player 2 name
-		inputGbc.gridy = 1;
-		inputGbc.gridx = 0;
-		JLabel p2Label = createModernLabel("👤 Player 2:");
-		inputPanel.add(p2Label, inputGbc);
-
-		inputGbc.gridx = 1;
-		player2NameField = createModernTextField("Enter Player 2 Name");
-		inputPanel.add(player2NameField, inputGbc);
-
-		// Difficulty selection
-		inputGbc.gridy = 2;
-		inputGbc.gridx = 0;
-		JLabel diffLabel = createModernLabel("⚙️ Difficulty:");
-		inputPanel.add(diffLabel, inputGbc);
-
-		inputGbc.gridx = 1;
+		// Maintains compatibility with controller
 		difficultyCombo = new JComboBox<>(new String[] { "Easy (9x9)", "Medium (13x13)", "Hard (16x16)" });
-		difficultyCombo.setFont(new Font("Arial", Font.PLAIN, 16));
-		difficultyCombo.setBackground(Color.WHITE);
-		difficultyCombo.setForeground(Color.BLACK);
-		difficultyCombo.setPreferredSize(new Dimension(250, 50));
-		inputPanel.add(difficultyCombo, inputGbc);
+		difficultyCombo.setVisible(false); // Hidden field
+		startPanel.add(difficultyCombo);
 
-		gbc.gridy = 4;
-		gbc.gridwidth = 2;
-		gbc.gridx = 0;
-		startPanel.add(inputPanel, gbc);
+		// Dynamic Info Panel
+		JPanel diffInfoPanel = new RoundedPanel(20, new Color(40, 180, 100)); // Default Green
+		diffInfoPanel.setLayout(new BorderLayout());
+		diffInfoPanel.setBorder(BorderFactory.createEmptyBorder(15, 20, 15, 20));
+		JLabel diffInfoText = new JLabel(
+				"<html><b>Easy</b><br>✏ Board size: 9x9<br>💣 Mines: 10<br>♥ Starting lives: 10</html>");
+		diffInfoText.setForeground(Color.WHITE);
+		diffInfoText.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		diffInfoPanel.add(diffInfoText);
 
-		// Info button for difficulty details
-		gbc.gridy = 5;
-		gbc.insets = new Insets(20, 15, 10, 15);
-		JButton infoButton = createGradientButton("📊 Show Difficulty Details", new Color(70, 100, 180),
-				new Color(90, 120, 200));
-		infoButton.addActionListener(e -> showDifficultyInfo());
-		startPanel.add(infoButton, gbc);
+		// Buttons to toggle difficulty
+		JButton btnEasy = createDiffButton("Easy", true);
+		JButton btnMed = createDiffButton("Medium", false);
+		JButton btnHard = createDiffButton("Hard", false);
 
-		// Management button
-		gbc.gridy = 6;
-		gbc.insets = new Insets(10, 15, 10, 15);
-		JButton managementButton = createGradientButton("📝 Question & History Management", new Color(100, 80, 160),
-				new Color(120, 100, 180));
-		managementButton.addActionListener(e -> showManagementView());
-		startPanel.add(managementButton, gbc);
+		Runnable updateDiffDiff = () -> {
+			if (btnEasy.getBackground().equals(Color.WHITE)) {
+				difficultyCombo.setSelectedIndex(0);
+				diffInfoPanel.setBackground(new Color(40, 180, 100)); // Green
+				diffInfoText.setText(
+						"<html><b>Easy</b><br>✏ Board size: 9x9<br>💣 Mines: 10<br>♥ Perfect for beginners</html>");
+			} else if (btnMed.getBackground().equals(Color.WHITE)) {
+				difficultyCombo.setSelectedIndex(1);
+				diffInfoPanel.setBackground(new Color(255, 140, 0)); // Orange
+				diffInfoText.setText(
+						"<html><b>Medium</b><br>✏ Board size: 13x13<br>💣 Mines: 26<br>♥ Balanced challenge</html>");
+			} else {
+				difficultyCombo.setSelectedIndex(2);
+				diffInfoPanel.setBackground(new Color(220, 50, 70)); // Red
+				diffInfoText.setText(
+						"<html><b>Hard</b><br>✏ Board size: 16x16<br>💣 Mines: 44<br>♥ For experts only!</html>");
+			}
+			diffInfoPanel.repaint();
+		};
 
-		// Start button - prominent
-		gbc.gridy = 7;
-		gbc.insets = new Insets(30, 15, 20, 15);
-		startButton = createGradientButton("🚀 START GAME", new Color(40, 167, 69), new Color(60, 187, 89));
-		startButton.setFont(new Font("Arial", Font.BOLD, 24));
-		startButton.setPreferredSize(new Dimension(300, 60));
-		startPanel.add(startButton, gbc);
+		ActionListener diffAction = e -> {
+			JButton source = (JButton) e.getSource();
+			// Reset styles
+			normalizeDiffButton(btnEasy);
+			normalizeDiffButton(btnMed);
+			normalizeDiffButton(btnHard);
+			// Highlight selected
+			source.setBackground(Color.WHITE);
+			source.setForeground(Color.BLACK);
+			updateDiffDiff.run();
+		};
 
-		// AI Demo button
-		gbc.gridy = 8;
-		gbc.insets = new Insets(10, 15, 20, 15);
-		demoButton = createGradientButton("🤖 Play with AI", new Color(255, 140, 0), new Color(255, 160, 20));
-		demoButton.setFont(new Font("Arial", Font.BOLD, 18));
-		demoButton.setPreferredSize(new Dimension(300, 50));
-		startPanel.add(demoButton, gbc);
+		btnEasy.addActionListener(diffAction);
+		btnMed.addActionListener(diffAction);
+		btnHard.addActionListener(diffAction);
 
-		// Statistics button
-		gbc.gridy = 9;
-		gbc.insets = new Insets(10, 15, 20, 15);
-		JButton statsButton = createGradientButton("📊 Statistics Dashboard", new Color(100, 149, 237),
-				new Color(65, 105, 225));
-		statsButton.addActionListener(e -> showStatisticsView());
-		startPanel.add(statsButton, gbc);
+		diffToggle.add(btnEasy);
+		diffToggle.add(btnMed);
+		diffToggle.add(btnHard);
+		formCard.add(diffToggle, gbc);
+
+		gbc.gridy++;
+		formCard.add(diffInfoPanel, gbc);
+
+		// Actions
+		gbc.gridy++;
+		gbc.insets = new Insets(25, 0, 10, 0);
+		startButton = createGradientButton("▷ Start Game", new Color(170, 40, 180), new Color(200, 60, 210));
+		startButton.setFont(new Font("Segoe UI", Font.BOLD, 18));
+		startButton.setPreferredSize(new Dimension(200, 50));
+		formCard.add(startButton, gbc);
+
+		gbc.gridy++;
+		gbc.insets = new Insets(0, 0, 0, 0);
+		demoButton = createGradientButton("🤖 Play with AI", new Color(60, 60, 80), new Color(80, 80, 100));
+		demoButton.setPreferredSize(new Dimension(200, 45));
+		formCard.add(demoButton, gbc);
+
+		gridPanel.add(formCard);
+
+		// --- RIGHT COLUMN: Info Cards ---
+		JPanel rightCol = new JPanel(new GridLayout(2, 1, 0, 25));
+		rightCol.setOpaque(false);
+
+		// How to Play
+		JPanel helpCard = createCardPanel();
+		helpCard.setLayout(new BorderLayout());
+		helpCard.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+		JLabel helpTitle = new JLabel("◎ How to Play?");
+		helpTitle.setFont(new Font("Segoe UI", Font.BOLD, 18));
+		helpTitle.setForeground(Color.WHITE);
+		helpCard.add(helpTitle, BorderLayout.NORTH);
+
+		JTextArea helpText = new JTextArea(
+				"\n🎯 Goal: Reveal all cells safely\n\n" +
+						"👥 Players: Separate boards, shared lives\n\n" +
+						"❤ Lives: Lose lives on mines\n\n" +
+						"❓ Questions: Answer for bonuses\n\n" +
+						"🎁 Surprises: Random rewards/penalties");
+		helpText.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		helpText.setForeground(new Color(200, 200, 200));
+		helpText.setOpaque(false);
+		helpText.setEditable(false);
+		helpText.setLineWrap(true);
+		helpCard.add(helpText, BorderLayout.CENTER);
+		rightCol.add(helpCard);
+
+		// Cell Types
+		JPanel legendCard = createCardPanel();
+		legendCard.setLayout(new BorderLayout());
+		legendCard.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+		JLabel legendTitle = new JLabel("⚡ Cell Types");
+		legendTitle.setFont(new Font("Segoe UI", Font.BOLD, 18));
+		legendTitle.setForeground(Color.WHITE);
+		legendCard.add(legendTitle, BorderLayout.NORTH);
+
+		JPanel legendList = new JPanel(new GridLayout(4, 1, 5, 5));
+		legendList.setOpaque(false);
+		legendList.add(createLegendItem("� Mine", "Loses lives", new Color(100, 30, 30)));
+		legendList.add(createLegendItem("123 Number", "Shows adjacent mines", new Color(30, 60, 100)));
+		legendList.add(createLegendItem("❓ Question", "Answer for bonus", new Color(50, 20, 80)));
+		legendList.add(createLegendItem("🎁 Surprise", "Random effect", new Color(80, 60, 20)));
+		legendCard.add(legendList, BorderLayout.CENTER); // Using South or Center
+
+		rightCol.add(legendCard);
+
+		gridPanel.add(rightCol);
+
+		mainContent.add(gridPanel);
+		startPanel.add(mainContent, BorderLayout.CENTER);
 	}
 
 	private void showStatisticsView() {
@@ -316,14 +392,103 @@ public class GameView extends JFrame {
 		});
 	}
 
-	/**
-	 * Creates a modern styled label for the start screen.
-	 */
-	private JLabel createModernLabel(String text) {
-		JLabel label = new JLabel(text);
-		label.setFont(new Font("Arial", Font.BOLD, 18));
-		label.setForeground(Color.WHITE);
-		return label;
+	// --- Helper Methods ---
+	private JButton createNavButton(String text, boolean active) {
+		JButton btn = new JButton(text);
+		btn.setFont(new Font("Segoe UI", Font.BOLD, 14));
+		btn.setForeground(active ? Color.WHITE : new Color(180, 180, 180));
+		btn.setBackground(active ? new Color(100, 50, 150) : new Color(0, 0, 0, 0));
+		btn.setFocusPainted(false);
+		btn.setBorderPainted(false);
+		btn.setContentAreaFilled(active);
+		btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		return btn;
+	}
+
+	private JPanel createCardPanel() {
+		return new RoundedPanel(25, new Color(35, 25, 55));
+	}
+
+	private JLabel createLabel(String text) {
+		JLabel lbl = new JLabel(text);
+		lbl.setForeground(new Color(200, 200, 200));
+		lbl.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		return lbl;
+	}
+
+	private JTextField createStyledTextField(String placeholder) {
+		JTextField field = new JTextField();
+		field.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		field.setForeground(Color.WHITE);
+		field.setBackground(new Color(60, 50, 80));
+		field.setCaretColor(Color.WHITE);
+		field.setBorder(BorderFactory.createCompoundBorder(
+				BorderFactory.createLineBorder(new Color(80, 70, 100)),
+				BorderFactory.createEmptyBorder(10, 10, 10, 10)));
+		return field;
+	}
+
+	private JButton createDiffButton(String text, boolean selected) {
+		JButton btn = new JButton(text);
+		btn.setFont(new Font("Segoe UI", Font.BOLD, 14));
+		btn.setFocusPainted(false);
+		btn.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
+		btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		if (selected) {
+			btn.setBackground(Color.WHITE);
+			btn.setForeground(Color.BLACK);
+		} else {
+			normalizeDiffButton(btn);
+		}
+		return btn;
+	}
+
+	private void normalizeDiffButton(JButton btn) {
+		btn.setBackground(new Color(30, 20, 50));
+		btn.setForeground(Color.GRAY);
+		btn.setBorder(BorderFactory.createLineBorder(new Color(60, 60, 80)));
+	}
+
+	private JPanel createLegendItem(String title, String desc, Color bg) {
+		JPanel p = new RoundedPanel(10, bg);
+		p.setLayout(new BorderLayout());
+		p.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+		JLabel t = new JLabel(title);
+		t.setForeground(Color.WHITE);
+		t.setFont(new Font("Segoe UI", Font.BOLD, 14));
+		JLabel d = new JLabel(desc);
+		d.setForeground(new Color(200, 200, 200));
+		d.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+		p.add(t, BorderLayout.WEST);
+		p.add(d, BorderLayout.EAST);
+		return p;
+	}
+
+	class RoundedPanel extends JPanel {
+		private int radius;
+		private Color bgColor;
+
+		public RoundedPanel(int radius, Color bgColor) {
+			this.radius = radius;
+			this.bgColor = bgColor;
+			setOpaque(false);
+		}
+
+		@Override
+		public void setBackground(Color bg) {
+			super.setBackground(bg);
+			this.bgColor = bg;
+			repaint();
+		}
+
+		@Override
+		protected void paintComponent(Graphics g) {
+			super.paintComponent(g);
+			Graphics2D g2 = (Graphics2D) g;
+			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+			g2.setColor(bgColor != null ? bgColor : getBackground());
+			g2.fillRoundRect(0, 0, getWidth(), getHeight(), radius, radius);
+		}
 	}
 
 	/**
