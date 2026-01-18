@@ -12,3 +12,5 @@ timestamp,player1,player2,player1Score,player2Score,totalScore,difficulty,winner
 2026-01-18 14:45:08,Maram,Nishan,5,5,10,HARD,Tie,0
 2026-01-18 15:11:14,Leen,AI Bot,17,1,18,EASY,Leen,0
 2026-01-18 15:34:07,Amina,Hala,2,19,21,HARD,Hala,0
+2026-01-18 19:27:33,A,B,10,-9,1,HARD,Lost,0
+2026-01-18 19:32:44,a,a,6,7,13,EASY,Lost,0

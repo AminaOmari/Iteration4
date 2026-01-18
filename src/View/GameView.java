@@ -168,18 +168,18 @@ public class GameView extends JFrame {
 
 		// Hero Title
 		JLabel title = new JLabel("Welcome to MineSweeper");
-		title.setFont(new Font("Segoe UI", Font.BOLD, 48));
+		title.setFont(new Font("Segoe UI", Font.BOLD, 32));
 		title.setForeground(Color.WHITE);
 		title.setAlignmentX(Component.CENTER_ALIGNMENT);
 		mainContent.add(title);
 
 		JLabel subtitle = new JLabel("An exciting strategy game for two players with questions and surprises");
-		subtitle.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+		subtitle.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		subtitle.setForeground(new Color(200, 200, 220));
 		subtitle.setAlignmentX(Component.CENTER_ALIGNMENT);
 		mainContent.add(subtitle);
 
-		mainContent.add(Box.createVerticalStrut(40));
+		mainContent.add(Box.createVerticalStrut(15));
 
 		// Two-Column Grid
 		JPanel gridPanel = new JPanel(new GridLayout(1, 2, 40, 0));
@@ -189,7 +189,7 @@ public class GameView extends JFrame {
 		// --- LEFT COLUMN: Start Game Form ---
 		JPanel formCard = createCardPanel();
 		formCard.setLayout(new GridBagLayout());
-		formCard.setBorder(BorderFactory.createEmptyBorder(30, 30, 30, 30));
+		formCard.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -204,7 +204,7 @@ public class GameView extends JFrame {
 		formCard.add(formTitle, gbc);
 
 		gbc.gridy++;
-		gbc.insets = new Insets(20, 0, 5, 0);
+		gbc.insets = new Insets(10, 0, 5, 0);
 		formCard.add(createLabel("Player 1"), gbc);
 		gbc.gridy++;
 		gbc.insets = new Insets(0, 0, 10, 0);
@@ -215,7 +215,7 @@ public class GameView extends JFrame {
 		gbc.insets = new Insets(10, 0, 5, 0);
 		formCard.add(createLabel("Player 2"), gbc);
 		gbc.gridy++;
-		gbc.insets = new Insets(0, 0, 20, 0);
+		gbc.insets = new Insets(0, 0, 10, 0);
 		player2NameField = createStyledTextField("Enter player 2 name");
 		formCard.add(player2NameField, gbc);
 
@@ -272,13 +272,13 @@ public class GameView extends JFrame {
 		dTag.setAlignmentX(Component.LEFT_ALIGNMENT);
 
 		diffInfoPanel.add(dTitle);
-		diffInfoPanel.add(Box.createVerticalStrut(15));
+		diffInfoPanel.add(Box.createVerticalStrut(5));
 		diffInfoPanel.add(dBoard);
-		diffInfoPanel.add(Box.createVerticalStrut(8));
+		diffInfoPanel.add(Box.createVerticalStrut(5));
 		diffInfoPanel.add(dMines);
-		diffInfoPanel.add(Box.createVerticalStrut(8));
+		diffInfoPanel.add(Box.createVerticalStrut(5));
 		diffInfoPanel.add(dLives);
-		diffInfoPanel.add(Box.createVerticalStrut(15));
+		diffInfoPanel.add(Box.createVerticalStrut(5));
 		diffInfoPanel.add(dTag);
 
 		formCard.add(diffInfoPanel, gbc);
@@ -332,7 +332,7 @@ public class GameView extends JFrame {
 
 		// Actions
 		gbc.gridy++;
-		gbc.insets = new Insets(25, 0, 10, 0);
+		gbc.insets = new Insets(15, 0, 10, 0);
 		startButton = createGradientButton("▷ Start Game", new Color(170, 40, 180), new Color(200, 60, 210));
 		startButton.setFont(new Font("Segoe UI", Font.BOLD, 18));
 		startButton.setPreferredSize(new Dimension(200, 65));
@@ -347,7 +347,7 @@ public class GameView extends JFrame {
 		gridPanel.add(formCard);
 
 		// --- RIGHT COLUMN: Info Cards ---
-		JPanel rightCol = new JPanel(new GridLayout(2, 1, 0, 25));
+		JPanel rightCol = new JPanel(new GridLayout(2, 1, 0, 15));
 		rightCol.setOpaque(false);
 
 		// How to Play

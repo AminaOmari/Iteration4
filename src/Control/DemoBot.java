@@ -25,7 +25,7 @@ public class DemoBot implements Runnable {
     public void run() {
         try {
             while (running && !controller.isGameOver()) {
-                Thread.sleep(1000); // Wait 1 second between moves
+                Thread.sleep(1500); // Wait 1.5 second between moves
 
                 SwingUtilities.invokeLater(() -> {
                     if (running && !controller.isGameOver()) {
