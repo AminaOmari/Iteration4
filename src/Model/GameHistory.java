@@ -62,14 +62,7 @@ public class GameHistory {
 	 * @return New GameHistory instance
 	 */
 	public static GameHistory fromGameState(GameState gameState) {
-		String winner;
-		if (gameState.getPlayer1().getScore() > gameState.getPlayer2().getScore()) {
-			winner = gameState.getPlayer1().getName();
-		} else if (gameState.getPlayer2().getScore() > gameState.getPlayer1().getScore()) {
-			winner = gameState.getPlayer2().getName();
-		} else {
-			winner = "Tie";
-		}
+		String winner = gameState.isGameWon() ? "Won" : "Lost";
 
 		return new GameHistory(gameState.getPlayer1().getName(), gameState.getPlayer2().getName(),
 				gameState.getPlayer1().getScore(), gameState.getPlayer2().getScore(), gameState.getTotalScore(),
@@ -144,7 +137,12 @@ public class GameHistory {
 	}
 
 	public String getWinner() {
-		return winner;
+		// Handle legacy data or new format
+		if ("Won".equalsIgnoreCase(winner) || "Lost".equalsIgnoreCase(winner)) {
+			return winner;
+		}
+		// If legacy name/Tie: infer result from lives
+		return remainingLives > 0 ? "Won together" : "Lost together";
 	}
 
 	public LocalDateTime getTimestamp() {

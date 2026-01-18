@@ -177,7 +177,7 @@ public class HistoryView extends JPanel {
             contentPanel.add(emptyPanel);
         } else {
             // Table
-            String[] cols = { "Date", "Player 1", "Player 2", "Total Score", "Difficulty", "Winner" };
+            String[] cols = { "Date", "Player 1", "Player 2", "Total Score", "Difficulty", "Result" };
             tableModel = new DefaultTableModel(cols, 0) {
                 public boolean isCellEditable(int row, int col) {
                     return false;
