@@ -155,6 +155,10 @@ public class GameView extends JFrame {
 		statsBtn.addActionListener(e -> showHistoryView());
 		nav.add(statsBtn);
 
+		JButton rulesBtn = createNavButton("📜 Rules", false);
+		rulesBtn.addActionListener(e -> showGameRules());
+		nav.add(rulesBtn);
+
 		header.add(nav, BorderLayout.EAST);
 		startPanel.add(header, BorderLayout.NORTH);
 
@@ -1047,31 +1051,94 @@ public class GameView extends JFrame {
 	 * Displays game rules in a dialog.
 	 */
 	private void showGameRules() {
-		String rules = "🎮 MineSweeper - Game Rules 🎮\n\n" + "═══════════════════════════════════\n\n"
-				+ "🎯 OBJECTIVE:\n" + "Reveal all non-mine tiles without hitting mines!\n"
-				+ "Work together with your partner to maximize score.\n\n" + "👥 GAMEPLAY:\n"
-				+ "• Two players take turns\n" + "• Each player has their own board\n"
-				+ "• Both players share lives and compete for score\n\n" + "🖱️ CONTROLS:\n"
-				+ "• LEFT-CLICK: Reveal a tile\n" + "  - First click: Reveals Q/S tile (+1 pt)\n"
-				+ "  - Second click: Activates Q/S tile (costs points)\n" + "• RIGHT-CLICK: Place/remove flag 🚩\n\n"
-				+ "🔢 TILE TYPES:\n" + "• 💣 Mine: Loses 1 life\n" + "• 1-8 Number: Shows nearby mine count\n"
-				+ "• ✓ Empty: No nearby mines\n" + "• Q Question: Click twice to answer!\n"
-				+ "• S Surprise: Click twice to activate!\n\n" + "⭐ SCORING:\n" + "• Reveal safe tile: +1 point\n"
-				+ "• Activate Question: -5/8/12 pts (difficulty)\n" + "• Activate Surprise: -5/8/12 pts (difficulty)\n"
-				+ "• Correct answer: Bonus points!\n\n" + "❤️ LIVES:\n" + "• Shared between both players\n"
-				+ "• Game over when lives reach 0\n\n" + "🏆 WINNING:\n" + "Clear all non-mine tiles!\n\n"
-				+ "═══════════════════════════════════\n" + "Good luck! 🍀";
+		JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Game Rules", true);
+		dialog.setSize(500, 650);
+		dialog.setLocationRelativeTo(this);
 
-		JTextArea textArea = new JTextArea(rules);
-		textArea.setEditable(false);
-		textArea.setFont(new Font("Monospaced", Font.PLAIN, 12));
-		textArea.setBackground(new Color(245, 245, 245));
-		textArea.setForeground(new Color(33, 33, 33));
+		// Main Panel with Gradient Background
+		JPanel mainPanel = new JPanel() {
+			@Override
+			protected void paintComponent(Graphics g) {
+				super.paintComponent(g);
+				Graphics2D g2d = (Graphics2D) g;
+				g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+				GradientPaint gp = new GradientPaint(0, 0, new Color(30, 25, 45), 0, getHeight(),
+						new Color(15, 10, 20));
+				g2d.setPaint(gp);
+				g2d.fillRect(0, 0, getWidth(), getHeight());
+			}
+		};
+		mainPanel.setLayout(new BorderLayout());
 
-		JScrollPane scrollPane = new JScrollPane(textArea);
-		scrollPane.setPreferredSize(new Dimension(500, 600));
+		// Header
+		JPanel header = new JPanel(new BorderLayout());
+		header.setOpaque(false);
+		header.setBorder(BorderFactory.createEmptyBorder(25, 30, 20, 30));
 
-		JOptionPane.showMessageDialog(this, scrollPane, "Game Rules", JOptionPane.INFORMATION_MESSAGE);
+		JLabel title = new JLabel("📚 Game Rules");
+		title.setFont(new Font("Segoe UI", Font.BOLD, 28));
+		title.setForeground(Color.WHITE);
+		header.add(title, BorderLayout.CENTER);
+
+		mainPanel.add(header, BorderLayout.NORTH);
+
+		// Content
+		JPanel contentHost = new JPanel();
+		contentHost.setLayout(new BoxLayout(contentHost, BoxLayout.Y_AXIS));
+		contentHost.setOpaque(false);
+		contentHost.setBorder(BorderFactory.createEmptyBorder(0, 30, 20, 30));
+
+		String htmlContent = "<html><body style='width: 350px; font-family: Segoe UI; color: #E0E0E0; font-size: 14px; line-height: 1.5;'>"
+				+ "<h3 style='color: #FF79C6; margin-bottom: 5px;'>🎯 Objective</h3>"
+				+ "Reveal all safe tiles without hitting mines. Work together!"
+				+ "<br><br>"
+
+				+ "<h3 style='color: #8BE9FD; margin-bottom: 5px;'>👥 Gameplay</h3>"
+				+ "<ul>"
+				+ "<li><b>Turn-Based:</b> Players take turns revealing tiles.</li>"
+				+ "<li><b>Shared Lives:</b> Hitting a mine hurts the team!</li>"
+				+ "</ul>"
+
+				+ "<h3 style='color: #50FA7B; margin-bottom: 5px;'>🖱️ Controls</h3>"
+				+ "<ul>"
+				+ "<li><b>Left Click:</b> Reveal a tile.</li>"
+				+ "<li><b>Right Click:</b> Flag/Unflag a mine 🚩.</li>"
+				+ "</ul>"
+
+				+ "<h3 style='color: #F1FA8C; margin-bottom: 5px;'>⭐ Scoring & Specials</h3>"
+				+ "<ul>"
+				+ "<li><b>Safe Reveal:</b> +10 points.</li>"
+				+ "<li><b>Questions ❓:</b> Answer correctly for bonus points.</li>"
+				+ "<li><b>Surprises 🎁:</b> Random rewards or penalties!</li>"
+				+ "</ul>"
+				+ "</body></html>";
+
+		JLabel contentLabel = new JLabel(htmlContent);
+		contentHost.add(contentLabel);
+		contentHost.add(Box.createVerticalGlue());
+
+		JScrollPane scroll = new JScrollPane(contentHost);
+		scroll.setOpaque(false);
+		scroll.getViewport().setOpaque(false);
+		scroll.setBorder(null);
+		scroll.getVerticalScrollBar().setUnitIncrement(16);
+
+		mainPanel.add(scroll, BorderLayout.CENTER);
+
+		// Footer
+		JPanel footer = new JPanel(new FlowLayout(FlowLayout.CENTER));
+		footer.setOpaque(false);
+		footer.setBorder(BorderFactory.createEmptyBorder(20, 0, 30, 0));
+
+		JButton closeBtn = createGradientButton("Got it!", new Color(100, 50, 150), new Color(120, 70, 180));
+		closeBtn.setPreferredSize(new Dimension(140, 45));
+		closeBtn.addActionListener(e -> dialog.dispose());
+
+		footer.add(closeBtn);
+		mainPanel.add(footer, BorderLayout.SOUTH);
+
+		dialog.add(mainPanel);
+		dialog.setVisible(true);
 	}
 
 	/**
