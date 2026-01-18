@@ -346,59 +346,66 @@ public class GameView extends JFrame {
 
 		gridPanel.add(formCard);
 
-		// --- RIGHT COLUMN: Game Guide ---
-		JPanel guideCard = createCardPanel();
-		guideCard.setLayout(new BorderLayout());
-		guideCard.setBorder(BorderFactory.createEmptyBorder(25, 25, 25, 25));
+		// --- RIGHT COLUMN: Info Cards ---
+		JPanel rightCol = new JPanel();
+		rightCol.setLayout(new BoxLayout(rightCol, BoxLayout.Y_AXIS));
+		rightCol.setOpaque(false);
 
-		JPanel guideContent = new JPanel();
-		guideContent.setLayout(new BoxLayout(guideContent, BoxLayout.Y_AXIS));
-		guideContent.setOpaque(false);
+		// 1. How to Play Card
+		JPanel helpCard = createCardPanel();
+		helpCard.setLayout(new BorderLayout());
+		helpCard.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-		// How to Play Section
 		JLabel helpTitle = new JLabel("◎ How to Play?");
-		helpTitle.setFont(new Font("Segoe UI", Font.BOLD, 20));
+		helpTitle.setFont(new Font("Segoe UI", Font.BOLD, 18));
 		helpTitle.setForeground(Color.WHITE);
-		helpTitle.setAlignmentX(Component.LEFT_ALIGNMENT);
-		guideContent.add(helpTitle);
-		guideContent.add(Box.createVerticalStrut(15));
+		helpCard.add(helpTitle, BorderLayout.NORTH);
 
-		JLabel helpText = new JLabel("<html><body style='width: 250px; color: #DCDCF0;'>" +
-				"🎯 Goal: Reveal safely<br>" +
-				"👥 Team: Shared lives<br>" +
-				"❤ Lives: Watch out!<br>" +
-				"❓ Answer questions<br>" +
-				"🎁 Find surprises" +
-				"</body></html>");
-		helpText.setFont(new Font("Segoe UI", Font.PLAIN, 15));
-		helpText.setAlignmentX(Component.LEFT_ALIGNMENT);
-		guideContent.add(helpText);
+		JLabel helpText = new JLabel(
+				"<html><body style='width: 300px; color: #E0E0E0; font-family: Segoe UI; font-size: 13px; margin-top: 10px;'>"
+						+
+						"<div style='margin-bottom: 8px;'><b>🎯 Goal:</b> Reveal all cells without hitting mines</div>"
+						+
+						"<div style='margin-bottom: 8px;'><b>👥 Players:</b> Each player has a board, take turns</div>"
+						+
+						"<div style='margin-bottom: 8px;'><b>❤ Lives:</b> Shared pool of lives</div>" +
+						"<div style='margin-bottom: 8px;'><b>⭐ Score:</b> Earn points for safe moves</div>" +
+						"<div style='margin-bottom: 8px;'><b>❓ Questions:</b> Answer correctly for bonuses</div>" +
+						"<div><b>🎁 Surprises:</b> Special rewards or penalties</div>" +
+						"</body></html>");
+		helpCard.add(helpText, BorderLayout.CENTER);
 
-		guideContent.add(Box.createVerticalStrut(20));
+		rightCol.add(helpCard);
+		rightCol.add(Box.createVerticalStrut(20));
 
-		// Cell Types Section
+		// 2. Cell Types Card
+		JPanel legendCard = createCardPanel();
+		legendCard.setLayout(new BorderLayout());
+		legendCard.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
 		JLabel legendTitle = new JLabel("⚡ Cell Types");
-		legendTitle.setFont(new Font("Segoe UI", Font.BOLD, 20));
+		legendTitle.setFont(new Font("Segoe UI", Font.BOLD, 18));
 		legendTitle.setForeground(Color.WHITE);
-		legendTitle.setAlignmentX(Component.LEFT_ALIGNMENT);
-		guideContent.add(legendTitle);
-		guideContent.add(Box.createVerticalStrut(10));
+		legendCard.add(legendTitle, BorderLayout.NORTH);
 
-		JPanel legendList = new JPanel(new GridLayout(4, 1, 0, 5)); // 5px gap
+		JPanel legendList = new JPanel(new GridLayout(5, 1, 0, 8));
 		legendList.setOpaque(false);
-		legendList.setAlignmentX(Component.LEFT_ALIGNMENT);
-		legendList.setMaximumSize(new Dimension(Integer.MAX_VALUE, 200));
+		legendList.setBorder(BorderFactory.createEmptyBorder(15, 0, 0, 0));
 
-		legendList.add(createLegendItem(" Mine", "Loses lives", new Color(180, 60, 60)));
-		legendList.add(createLegendItem("123 Number", "Adjacent mines", new Color(50, 90, 160)));
-		legendList.add(createLegendItem("❓ Question", "Bonus query", new Color(90, 50, 140)));
-		legendList.add(createLegendItem("🎁 Surprise", "Mystery effect", new Color(140, 100, 40)));
+		legendList.add(createLegendItem(" Mine", "Loses lives", new Color(160, 40, 40)));
+		legendList.add(createLegendItem("1,2,3... Number", "Nearby count", new Color(40, 70, 120)));
+		legendList.add(createLegendItem(" Empty", "No nearby mines", new Color(60, 70, 80)));
+		legendList.add(createLegendItem("❓ Question", "Bonus query", new Color(80, 40, 110)));
+		legendList.add(createLegendItem("🎁 Surprise", "Mystery effect", new Color(100, 70, 30)));
 
-		guideContent.add(legendList);
-		guideContent.add(Box.createVerticalGlue());
+		legendCard.add(legendList, BorderLayout.CENTER);
 
-		guideCard.add(guideContent, BorderLayout.CENTER);
-		gridPanel.add(guideCard);
+		rightCol.add(legendCard);
+
+		// Fill remaining space
+		rightCol.add(Box.createVerticalGlue());
+
+		gridPanel.add(rightCol);
 
 		mainContent.add(gridPanel);
 
