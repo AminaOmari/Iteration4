@@ -300,6 +300,20 @@ public class GameView extends JFrame {
 		demoButton.setFont(new Font("Arial", Font.BOLD, 18));
 		demoButton.setPreferredSize(new Dimension(300, 50));
 		startPanel.add(demoButton, gbc);
+
+		// Statistics button
+		gbc.gridy = 9;
+		gbc.insets = new Insets(10, 15, 20, 15);
+		JButton statsButton = createGradientButton("📊 Statistics Dashboard", new Color(100, 149, 237),
+				new Color(65, 105, 225));
+		statsButton.addActionListener(e -> showStatisticsView());
+		startPanel.add(statsButton, gbc);
+	}
+
+	private void showStatisticsView() {
+		SwingUtilities.invokeLater(() -> {
+			new StatisticsView().setVisible(true);
+		});
 	}
 
 	/**

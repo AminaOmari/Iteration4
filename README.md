@@ -60,6 +60,14 @@ Professional animated welcome experience that creates engaging first impression:
 *   Modern gradient backgrounds and polished typography
 *   Implementation in `GameView.java` using custom `Particle` class
 
+### 6. Statistics Dashboard 📊
+Comprehensive post-game analysis tool implemented in `StatisticsView.java` using custom-built chart components (no external libraries):
+*   **Overview Panel:** Displays aggregate stats like total games, win percentage, average score, and top player.
+*   **Difficulty Analysis:** Bar chart visualizing win/loss ratios across Easy, Medium, and Hard difficulties.
+*   **Score Trends:** Line chart tracking total scores over the last 20 games to visualize team improvement.
+*   **Player Stats:** Comparative analysis of average scores between Player 1 and Player 2.
+*   Demonstrates advanced Java Swing skills including custom component painting (`paintComponent`) and data visualization logic.
+
 ## 🎮 How to Play
 
 ### The Goal
