@@ -81,15 +81,35 @@ public class HistoryView extends JPanel {
         p.setOpaque(false);
         p.setMaximumSize(new Dimension(2000, 80));
 
+        // Text Panel
+        JPanel textP = new JPanel(new GridLayout(2, 1));
+        textP.setOpaque(false);
         JLabel title = new JLabel("Game History");
         title.setFont(new Font("Segoe UI", Font.BOLD, 36));
         title.setForeground(Color.WHITE);
-        p.add(title, BorderLayout.NORTH);
+        textP.add(title);
 
         JLabel subtitle = new JLabel("View all games played in the system");
         subtitle.setFont(new Font("Segoe UI", Font.PLAIN, 16));
         subtitle.setForeground(TEXT_GRAY);
-        p.add(subtitle, BorderLayout.CENTER);
+        textP.add(subtitle);
+
+        p.add(textP, BorderLayout.WEST);
+
+        // Buttons Panel
+        JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
+        btnPanel.setOpaque(false);
+
+        JButton refreshBtn = createStyledButton("Refresh", new Color(70, 100, 180));
+        refreshBtn.addActionListener(e -> refresh());
+
+        JButton clearBtn = createStyledButton("Clear History", new Color(220, 53, 69));
+        clearBtn.addActionListener(e -> clearHistory());
+
+        btnPanel.add(refreshBtn);
+        btnPanel.add(clearBtn);
+
+        p.add(btnPanel, BorderLayout.EAST);
 
         contentPanel.add(p);
         contentPanel.add(Box.createVerticalStrut(30));
@@ -227,6 +247,29 @@ public class HistoryView extends JPanel {
         card.add(i, BorderLayout.EAST);
 
         return card;
+    }
+
+    private void clearHistory() {
+        int confirm = JOptionPane.showConfirmDialog(this,
+                "Are you sure you want to clear all history? This cannot be undone!",
+                "Confirm Clear", JOptionPane.YES_NO_OPTION);
+        if (confirm == JOptionPane.YES_OPTION) {
+            HistoryManager.clearHistory();
+            refresh();
+            JOptionPane.showMessageDialog(this, "History cleared successfully!");
+        }
+    }
+
+    private JButton createStyledButton(String text, Color bg) {
+        JButton btn = new JButton(text);
+        btn.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        btn.setForeground(Color.WHITE);
+        btn.setBackground(bg);
+        btn.setFocusPainted(false);
+        btn.setBorderPainted(false);
+        btn.setPreferredSize(new Dimension(140, 40));
+        btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        return btn;
     }
 
     // Reuse Nav Button Style
