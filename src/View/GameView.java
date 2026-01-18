@@ -346,53 +346,63 @@ public class GameView extends JFrame {
 
 		gridPanel.add(formCard);
 
-		// --- RIGHT COLUMN: Info Cards ---
-		JPanel rightCol = new JPanel(new GridLayout(2, 1, 0, 15));
-		rightCol.setOpaque(false);
+		// --- RIGHT COLUMN: Game Guide ---
+		JPanel guideCard = createCardPanel();
+		guideCard.setLayout(new BorderLayout());
+		guideCard.setBorder(BorderFactory.createEmptyBorder(25, 25, 25, 25));
 
-		// How to Play
-		JPanel helpCard = createCardPanel();
-		helpCard.setLayout(new BorderLayout());
-		helpCard.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+		JPanel guideContent = new JPanel();
+		guideContent.setLayout(new BoxLayout(guideContent, BoxLayout.Y_AXIS));
+		guideContent.setOpaque(false);
+
+		// How to Play Section
 		JLabel helpTitle = new JLabel("◎ How to Play?");
-		helpTitle.setFont(new Font("Segoe UI", Font.BOLD, 18));
+		helpTitle.setFont(new Font("Segoe UI", Font.BOLD, 20));
 		helpTitle.setForeground(Color.WHITE);
-		helpCard.add(helpTitle, BorderLayout.NORTH);
+		helpTitle.setAlignmentX(Component.LEFT_ALIGNMENT);
+		guideContent.add(helpTitle);
+		guideContent.add(Box.createVerticalStrut(15));
 
 		JTextArea helpText = new JTextArea(
-				"\n🎯 Goal: Reveal all cells safely\n\n" +
-						"👥 Players: Separate boards, shared lives\n\n" +
-						"❤ Lives: Lose lives on mines\n\n" +
-						"❓ Questions: Answer for bonuses\n\n" +
-						"🎁 Surprises: Random rewards/penalties");
-		helpText.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-		helpText.setForeground(new Color(200, 200, 200));
+				"🎯 Goal: Reveal safely\n" +
+						"👥 Team: Shared lives\n" +
+						"❤ Lives: Watch out!\n" +
+						"❓ Answer questions\n" +
+						"🎁 Find surprises");
+		helpText.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+		helpText.setForeground(new Color(220, 220, 240));
+		helpText.setLineWrap(true);
+		helpText.setWrapStyleWord(true);
 		helpText.setOpaque(false);
 		helpText.setEditable(false);
-		helpText.setLineWrap(true);
-		helpCard.add(helpText, BorderLayout.CENTER);
-		rightCol.add(helpCard);
+		helpText.setAlignmentX(Component.LEFT_ALIGNMENT);
+		guideContent.add(helpText);
 
-		// Cell Types
-		JPanel legendCard = createCardPanel();
-		legendCard.setLayout(new BorderLayout());
-		legendCard.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+		guideContent.add(Box.createVerticalStrut(30));
+
+		// Cell Types Section
 		JLabel legendTitle = new JLabel("⚡ Cell Types");
-		legendTitle.setFont(new Font("Segoe UI", Font.BOLD, 18));
+		legendTitle.setFont(new Font("Segoe UI", Font.BOLD, 20));
 		legendTitle.setForeground(Color.WHITE);
-		legendCard.add(legendTitle, BorderLayout.NORTH);
+		legendTitle.setAlignmentX(Component.LEFT_ALIGNMENT);
+		guideContent.add(legendTitle);
+		guideContent.add(Box.createVerticalStrut(15));
 
-		JPanel legendList = new JPanel(new GridLayout(4, 1, 5, 5));
+		JPanel legendList = new JPanel(new GridLayout(4, 1, 0, 8)); // 8px gap
 		legendList.setOpaque(false);
-		legendList.add(createLegendItem("� Mine", "Loses lives", new Color(100, 30, 30)));
-		legendList.add(createLegendItem("123 Number", "Shows adjacent mines", new Color(30, 60, 100)));
-		legendList.add(createLegendItem("❓ Question", "Answer for bonus", new Color(50, 20, 80)));
-		legendList.add(createLegendItem("🎁 Surprise", "Random effect", new Color(80, 60, 20)));
-		legendCard.add(legendList, BorderLayout.CENTER); // Using South or Center
+		legendList.setAlignmentX(Component.LEFT_ALIGNMENT);
+		legendList.setMaximumSize(new Dimension(Integer.MAX_VALUE, 240)); // Constrain height
 
-		rightCol.add(legendCard);
+		legendList.add(createLegendItem(" Mine", "Loses lives", new Color(180, 60, 60)));
+		legendList.add(createLegendItem("123 Number", "Adjacent mines", new Color(50, 90, 160)));
+		legendList.add(createLegendItem("❓ Question", "Bonus query", new Color(90, 50, 140)));
+		legendList.add(createLegendItem("🎁 Surprise", "Mystery effect", new Color(140, 100, 40)));
 
-		gridPanel.add(rightCol);
+		guideContent.add(legendList);
+		guideContent.add(Box.createVerticalGlue());
+
+		guideCard.add(guideContent, BorderLayout.CENTER);
+		gridPanel.add(guideCard);
 
 		mainContent.add(gridPanel);
 
