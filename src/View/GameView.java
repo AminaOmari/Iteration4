@@ -270,6 +270,16 @@ public class GameView extends JFrame {
 		dLives.setForeground(Color.WHITE);
 		dLives.setAlignmentX(Component.LEFT_ALIGNMENT);
 
+		JLabel dContent = new JLabel("📦 Content: 6 Q, 2 S");
+		dContent.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		dContent.setForeground(Color.WHITE);
+		dContent.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+		JLabel dRules = new JLabel("⚖ Cost: 5pts | Bonus: ±8");
+		dRules.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		dRules.setForeground(Color.WHITE);
+		dRules.setAlignmentX(Component.LEFT_ALIGNMENT);
+
 		JLabel dTag = new JLabel("Perfect for beginners");
 		dTag.setFont(new Font("Segoe UI", Font.ITALIC, 14));
 		dTag.setForeground(new Color(230, 230, 230));
@@ -283,6 +293,10 @@ public class GameView extends JFrame {
 		diffInfoPanel.add(Box.createVerticalStrut(5));
 		diffInfoPanel.add(dLives);
 		diffInfoPanel.add(Box.createVerticalStrut(5));
+		diffInfoPanel.add(dContent);
+		diffInfoPanel.add(Box.createVerticalStrut(5));
+		diffInfoPanel.add(dRules);
+		diffInfoPanel.add(Box.createVerticalStrut(5));
 		diffInfoPanel.add(dTag);
 
 		formCard.add(diffInfoPanel, gbc);
@@ -293,25 +307,31 @@ public class GameView extends JFrame {
 				difficultyCombo.setSelectedIndex(0);
 				diffInfoPanel.setGradient(new Color(46, 204, 113), new Color(39, 174, 96)); // Green
 				dTitle.setText("Easy");
-				dBoard.setText("✏ Board size: 9x9");
-				dMines.setText("💣 Mines: 10 per board");
-				dLives.setText("♥ Starting lives: 10");
+				dBoard.setText("✏ Board: 9x9");
+				dMines.setText("💣 Mines: 10");
+				dLives.setText("♥ Lives: 10");
+				dContent.setText("📦 6 Questions, 2 Surprises");
+				dRules.setText("⚖ Cost: 5pts | Effect: ±8");
 				dTag.setText("Perfect for beginners");
 			} else if (btnMed.getBackground().equals(Color.WHITE)) {
 				difficultyCombo.setSelectedIndex(1);
 				diffInfoPanel.setGradient(new Color(255, 167, 38), new Color(251, 140, 0)); // Orange
 				dTitle.setText("Medium");
-				dBoard.setText("✏ Board size: 13x13");
-				dMines.setText("💣 Mines: 26 per board");
-				dLives.setText("♥ Starting lives: 8");
+				dBoard.setText("✏ Board: 13x13");
+				dMines.setText("💣 Mines: 26");
+				dLives.setText("♥ Lives: 8");
+				dContent.setText("📦 7 Questions, 3 Surprises");
+				dRules.setText("⚖ Cost: 8pts | Effect: ±12");
 				dTag.setText("An exciting challenge");
 			} else {
 				difficultyCombo.setSelectedIndex(2);
 				diffInfoPanel.setGradient(new Color(239, 83, 80), new Color(229, 57, 53)); // Red/Pink
 				dTitle.setText("Hard");
-				dBoard.setText("✏ Board size: 16x16");
-				dMines.setText("💣 Mines: 44 per board");
-				dLives.setText("♥ Starting lives: 6");
+				dBoard.setText("✏ Board: 16x16");
+				dMines.setText("💣 Mines: 44");
+				dLives.setText("♥ Lives: 6");
+				dContent.setText("📦 11 Questions, 4 Surprises");
+				dRules.setText("⚖ Cost: 12pts | Effect: ±16");
 				dTag.setText("Only for the brave");
 			}
 			diffInfoPanel.repaint();
