@@ -15,16 +15,16 @@ In this version, two players (human-human or human-AI) work together to clear th
 *   **AI Partner:** A built-in "Smart Bot" that can play as Player 2, helping you clear the board.
 *   **Modern UI:** Features smooth animations, particle effects, and a clean, flat aesthetic.
 
-## 11. Enhanced User Experience Features
+## Enhanced User Experience Features
 
-### 11.1 Difficulty Details Button (Start Screen)
+### 1. Difficulty Details Button (Start Screen)
 Added an interactive **'Show Difficulty Details'** button on the start screen that displays comprehensive information about each difficulty level:
 *   Shows board size for each level (Easy: 9x9, Medium: 13x13, Hard: 16x16)
 *   Displays number of mines per difficulty level
 *   Explains trivia question frequency and difficulty
 *   Helps players make informed decisions before starting the game
 
-### 11.2 Play With AI Button & Implementation
+### 2. Play With AI Button & Implementation
 Dedicated **'🤖 Play With AI'** button enables single-player mode against a computer team-mate:
 *   Prominent button placement on start screen for easy access
 *   AI opponent implemented with intelligent move strategy
@@ -32,7 +32,7 @@ Dedicated **'🤖 Play With AI'** button enables single-player mode against a co
 *   Full integration with game mechanics (trivia, surprises, scoring)
 *   File: `Control/DemoBot.java` provides the AI logic
 
-### 11.3 In-Game Assistance Buttons
+### 3. In-Game Assistance Buttons
 Enhanced gameplay with two helpful buttons available during the game:
 
 **Hint Button:**
@@ -45,7 +45,7 @@ Enhanced gameplay with two helpful buttons available during the game:
 *   Explains tile types, scoring system, trivia mechanics, and win conditions
 *   Professional popup dialog with formatted, easy-to-read instructions
 
-### 11.4 Question Save Feature
+### 4. Question Save Feature
 Innovative feature allowing players to defer trivia questions for strategic gameplay:
 *   **'Save for Later'** button in trivia dialog allows deferring questions
 *   Saved questions displayed in a side panel showing question text and difficulty
@@ -53,7 +53,7 @@ Innovative feature allowing players to defer trivia questions for strategic game
 *   Strategic depth: players can focus on board exploration and answer questions when ready
 *   Visual counter shows number of saved questions (e.g., 'Saved Questions: 3')
 
-### 11.5 Animated Start Screen
+### 5. Animated Start Screen
 Professional animated welcome experience that creates engaging first impression:
 *   Dynamic particle system with floating game elements (Mines, Flags, Questions)
 *   Smooth animation loop handled by `javax.swing.Timer`
