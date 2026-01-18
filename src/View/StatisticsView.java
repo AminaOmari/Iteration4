@@ -179,12 +179,19 @@ public class StatisticsView extends JFrame {
         panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
         // Aggregate scores by "Player 1" slot vs "Player 2" slot averages
-        double avgP1 = history.stream().mapToInt(GameHistory::getPlayer1Score).average().orElse(0);
-        double avgP2 = history.stream().mapToInt(GameHistory::getPlayer2Score).average().orElse(0);
+        // Filter out extreme outliers (<-50) that might skew averages
+        double avgP1 = history.stream()
+                .mapToInt(GameHistory::getPlayer1Score)
+                .filter(s -> s > -50)
+                .average().orElse(0);
+        double avgP2 = history.stream()
+                .mapToInt(GameHistory::getPlayer2Score)
+                .filter(s -> s > -50)
+                .average().orElse(0);
 
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-        dataset.addValue((int) avgP1, "Avg Score", "Player 1");
-        dataset.addValue((int) avgP2, "Avg Score", "Player 2");
+        dataset.addValue(avgP1, "Avg Score", "Player 1");
+        dataset.addValue(avgP2, "Avg Score", "Player 2");
 
         JComponent chart = new SimpleBarChart(dataset);
         panel.add(createTitle("Average Score: Player 1 vs Player 2"), BorderLayout.NORTH);
@@ -237,21 +244,20 @@ public class StatisticsView extends JFrame {
             Graphics2D g2 = (Graphics2D) g;
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-            if (dataset.data.isEmpty())
+            if (dataset.data.isEmpty()) {
+                g2.setColor(Color.LIGHT_GRAY);
+                g2.setFont(new Font("Segoe UI", Font.ITALIC, 16));
+                g2.drawString("No data available yet.", getWidth() / 2 - 80, getHeight() / 2);
                 return;
+            }
 
             int w = getWidth();
             int h = getHeight();
-            int padding = 40;
+            int padding = 60; // Increased padding for axis labels
             int graphW = w - 2 * padding;
             int graphH = h - 2 * padding;
 
-            // Axis
-            g2.setColor(Color.LIGHT_GRAY);
-            g2.drawLine(padding, h - padding, w - padding, h - padding); // X
-            g2.drawLine(padding, padding, padding, h - padding); // Y
-
-            // Find max value
+            // Find max value for scaling
             double maxVal = 0;
             for (Map<String, Number> cat : dataset.data.values()) {
                 for (Number n : cat.values())
@@ -260,14 +266,48 @@ public class StatisticsView extends JFrame {
             if (maxVal == 0)
                 maxVal = 10;
 
+            // Round up maxVal to nice number
+            maxVal = Math.ceil(maxVal / 5.0) * 5.0;
+
+            // --- DRAW GRIDLINES & Y-AXIS LABELS ---
+            g2.setColor(new Color(255, 255, 255, 30));
+            g2.setStroke(new BasicStroke(1f));
+            g2.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+
+            int numGridLines = 5;
+            for (int i = 0; i <= numGridLines; i++) {
+                int y = h - padding - (int) ((i / (double) numGridLines) * graphH);
+                g2.drawLine(padding, y, w - padding, y); // Horizontal grid line
+
+                // Y-Axis Label
+                String label = String.valueOf((int) (maxVal * i / numGridLines));
+                g2.setColor(Color.LIGHT_GRAY);
+                g2.drawString(label, padding - 35, y + 5);
+                g2.setColor(new Color(255, 255, 255, 30)); // Reset for grid
+            }
+
+            // Axis Lines
+            g2.setColor(Color.WHITE);
+            g2.setStroke(new BasicStroke(2f));
+            g2.drawLine(padding, h - padding, w - padding, h - padding); // X-Axis
+            g2.drawLine(padding, padding, padding, h - padding); // Y-Axis
+
+            // --- DRAW BARS ---
             int numCategories = dataset.data.size();
-            int barWidth = Math.min(60, graphW / (numCategories * 2));
+            int barWidth = Math.min(80, graphW / (numCategories * 3));
             int gap = (graphW - (numCategories * barWidth)) / (numCategories + 1);
 
             int x = padding + gap;
 
-            // Draw Bars
-            Color[] colors = { new Color(76, 175, 80), new Color(220, 53, 69), new Color(33, 150, 243) };
+            // Colors
+            Color[] colors = {
+                    new Color(66, 165, 245), // Blue
+                    new Color(239, 83, 80), // Red
+                    new Color(102, 187, 106) // Green
+            };
+
+            int seriesCount = 0;
+            Set<String> seriesNames = new LinkedHashSet<>();
 
             for (Map.Entry<String, Map<String, Number>> entry : dataset.data.entrySet()) {
                 String category = entry.getKey();
@@ -275,25 +315,35 @@ public class StatisticsView extends JFrame {
 
                 int groupX = x;
                 int seriesIdx = 0;
-                int seriesWidth = barWidth / Math.max(1, seriesData.size()); // Split bar width if multiple series
+                int seriesWidth = barWidth / Math.max(1, seriesData.size());
 
-                // Draw category label
+                // X-Axis Category Label
                 g2.setColor(Color.WHITE);
-                g2.setFont(new Font("Arial", Font.PLAIN, 12));
+                g2.setFont(new Font("Segoe UI", Font.BOLD, 13));
                 FontMetrics fm = g2.getFontMetrics();
-                g2.drawString(category, groupX + (barWidth - fm.stringWidth(category)) / 2, h - padding + 20);
+                g2.drawString(category, groupX + (barWidth - fm.stringWidth(category)) / 2, h - padding + 25);
 
                 for (Map.Entry<String, Number> series : seriesData.entrySet()) {
+                    seriesNames.add(series.getKey());
                     double val = series.getValue().doubleValue();
                     int barH = (int) ((val / maxVal) * graphH);
 
                     g2.setColor(colors[seriesIdx % colors.length]);
-                    g2.fillRect(groupX, h - padding - barH, seriesWidth, barH);
+                    g2.fillRoundRect(groupX, h - padding - barH, seriesWidth - 4, barH, 5, 5); // Rounded bars
 
-                    // Value label
+                    // Value Label on Top of Bar
                     g2.setColor(Color.WHITE);
-                    String valStr = String.valueOf((int) val);
-                    g2.drawString(valStr, groupX + (seriesWidth - fm.stringWidth(valStr)) / 2, h - padding - barH - 5);
+                    g2.setFont(new Font("Segoe UI", Font.BOLD, 11));
+
+                    String valStr;
+                    if (val % 1 == 0) {
+                        valStr = String.valueOf((int) val);
+                    } else {
+                        valStr = String.format("%.1f", val);
+                    }
+
+                    int strW = g2.getFontMetrics().stringWidth(valStr);
+                    g2.drawString(valStr, groupX + (seriesWidth - strW) / 2 - 2, h - padding - barH - 5);
 
                     groupX += seriesWidth;
                     seriesIdx++;
@@ -301,19 +351,25 @@ public class StatisticsView extends JFrame {
                 x += barWidth + gap;
             }
 
-            // Legend
+            // --- DRAW LEGEND ---
+            int lx = w - 180;
             int ly = padding;
-            int lx = w - 150;
+
+            // Legend Box
+            g2.setColor(new Color(0, 0, 0, 100));
+            g2.fillRoundRect(lx - 10, ly - 10, 160, seriesNames.size() * 25 + 20, 10, 10);
+            g2.setColor(Color.GRAY);
+            g2.drawRoundRect(lx - 10, ly - 10, 160, seriesNames.size() * 25 + 20, 10, 10);
+
             int i = 0;
-            // Just verify first category keys to get series names
-            if (!dataset.data.isEmpty()) {
-                for (String series : dataset.data.values().iterator().next().keySet()) {
-                    g2.setColor(colors[i % colors.length]);
-                    g2.fillRect(lx, ly + (i * 20), 10, 10);
-                    g2.setColor(Color.WHITE);
-                    g2.drawString(series, lx + 15, ly + (i * 20) + 10);
-                    i++;
-                }
+            for (String series : seriesNames) {
+                g2.setColor(colors[i % colors.length]);
+                g2.fillRoundRect(lx, ly + (i * 25), 15, 15, 4, 4);
+
+                g2.setColor(Color.WHITE);
+                g2.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+                g2.drawString(series, lx + 25, ly + (i * 25) + 12);
+                i++;
             }
         }
     }
@@ -332,32 +388,59 @@ public class StatisticsView extends JFrame {
             Graphics2D g2 = (Graphics2D) g;
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-            if (values == null || values.isEmpty())
+            if (values == null || values.isEmpty()) {
+                g2.setColor(Color.LIGHT_GRAY);
+                g2.setFont(new Font("Segoe UI", Font.ITALIC, 16));
+                g2.drawString("No data available yet.", getWidth() / 2 - 80, getHeight() / 2);
                 return;
+            }
 
             int w = getWidth();
             int h = getHeight();
-            int padding = 40;
+            int padding = 60;
             int graphW = w - 2 * padding;
             int graphH = h - 2 * padding;
 
-            // Axis
-            g2.setColor(Color.LIGHT_GRAY);
-            g2.drawLine(padding, h - padding, w - padding, h - padding);
-            g2.drawLine(padding, padding, padding, h - padding);
-
             int maxVal = values.stream().max(Integer::compareTo).orElse(10);
             int minVal = values.stream().min(Integer::compareTo).orElse(0);
+
+            // Adjust range for better visuals
             if (minVal > 0)
                 minVal = 0;
             if (maxVal == minVal)
                 maxVal = minVal + 10;
+            // Round max up
+            maxVal = (int) (Math.ceil(maxVal / 10.0) * 10);
+
             int range = maxVal - minVal;
+
+            // --- DRAW GRIDLINES & Y-AXIS LABELS ---
+            g2.setColor(new Color(255, 255, 255, 30));
+            g2.setStroke(new BasicStroke(1f));
+            g2.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+
+            int numGridLines = 5;
+            for (int i = 0; i <= numGridLines; i++) {
+                int y = h - padding - (int) ((i / (double) numGridLines) * graphH);
+                g2.drawLine(padding, y, w - padding, y);
+
+                String label = String.valueOf(minVal + (range * i / numGridLines));
+                g2.setColor(Color.LIGHT_GRAY);
+                g2.drawString(label, padding - 35, y + 5);
+                g2.setColor(new Color(255, 255, 255, 30));
+            }
+
+            // Axis Lines
+            g2.setColor(Color.WHITE);
+            g2.setStroke(new BasicStroke(2f));
+            g2.drawLine(padding, h - padding, w - padding, h - padding);
+            g2.drawLine(padding, padding, padding, h - padding);
 
             double xStep = (double) graphW / Math.max(1, values.size() - 1);
 
-            g2.setStroke(new BasicStroke(2f));
-            g2.setColor(new Color(33, 150, 243));
+            // Draw Line
+            g2.setStroke(new BasicStroke(3f));
+            g2.setColor(new Color(66, 165, 245));
 
             for (int i = 0; i < values.size() - 1; i++) {
                 int val1 = values.get(i);
@@ -369,12 +452,20 @@ public class StatisticsView extends JFrame {
                 int y2 = h - padding - (int) (((val2 - minVal) / (double) range) * graphH);
 
                 g2.drawLine(x1, y1, x2, y2);
-                g2.fillOval(x1 - 3, y1 - 3, 6, 6);
+
+                // Draw Point
+                g2.fillOval(x1 - 4, y1 - 4, 8, 8);
             }
             // Last point
             int lastX = padding + (int) ((values.size() - 1) * xStep);
             int lastY = h - padding - (int) (((values.get(values.size() - 1) - minVal) / (double) range) * graphH);
-            g2.fillOval(lastX - 3, lastY - 3, 6, 6);
+            g2.fillOval(lastX - 4, lastY - 4, 8, 8);
+
+            // Value label for last point
+            g2.setColor(Color.WHITE);
+            g2.setFont(new Font("Segoe UI", Font.BOLD, 12));
+            String lastValStr = String.valueOf(values.get(values.size() - 1));
+            g2.drawString(lastValStr, lastX - 10, lastY - 10);
         }
     }
 }
