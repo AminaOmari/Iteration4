@@ -319,7 +319,7 @@ public class QuestionView extends JPanel {
         dialog.add(createWhiteLabel("Level:"), gbc);
         gbc.gridx = 1;
         gbc.gridwidth = 2;
-        JComboBox<String> levelCombo = new JComboBox<>(new String[] { "Easy", "Medium", "Hard", "Expert" });
+        JComboBox<String> levelCombo = new JComboBox<>(new String[] { "Easy", "Medium", "Hard" });
         dialog.add(levelCombo, gbc);
 
         gbc.gridx = 0;
@@ -402,7 +402,7 @@ public class QuestionView extends JPanel {
         dialog.add(createWhiteLabel("Level:"), gbc);
         gbc.gridx = 1;
         gbc.gridwidth = 2;
-        JComboBox<String> levelCombo = new JComboBox<>(new String[] { "Easy", "Medium", "Hard", "Expert" });
+        JComboBox<String> levelCombo = new JComboBox<>(new String[] { "Easy", "Medium", "Hard" });
         String cl = question.getLevel();
         if (cl.equalsIgnoreCase("easy"))
             levelCombo.setSelectedItem("Easy");

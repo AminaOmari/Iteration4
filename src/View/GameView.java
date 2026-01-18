@@ -221,61 +221,103 @@ public class GameView extends JFrame {
 
 		// Difficulty Selector
 		gbc.gridy++;
-		gbc.insets = new Insets(0, 0, 5, 0);
-		formCard.add(createLabel("Select Difficulty"), gbc);
-
-		gbc.gridy++;
-		gbc.insets = new Insets(0, 0, 15, 0);
+		gbc.insets = new Insets(0, 0, 15, 0); // Spacing
 		JPanel diffToggle = new JPanel(new GridLayout(1, 3, 10, 0));
 		diffToggle.setOpaque(false);
 
-		// Maintains compatibility with controller
+		// Hidden combo for compatibility
 		difficultyCombo = new JComboBox<>(new String[] { "Easy (9x9)", "Medium (13x13)", "Hard (16x16)" });
-		difficultyCombo.setVisible(false); // Hidden field
+		difficultyCombo.setVisible(false);
 		startPanel.add(difficultyCombo);
 
-		// Dynamic Info Panel
-		JPanel diffInfoPanel = new RoundedPanel(20, new Color(40, 180, 100)); // Default Green
-		diffInfoPanel.setLayout(new BorderLayout());
-		diffInfoPanel.setBorder(BorderFactory.createEmptyBorder(15, 20, 15, 20));
-		JLabel diffInfoText = new JLabel(
-				"<html><b>Easy</b><br>✏ Board size: 9x9<br>💣 Mines: 10<br>♥ Starting lives: 10</html>");
-		diffInfoText.setForeground(Color.WHITE);
-		diffInfoText.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-		diffInfoPanel.add(diffInfoText);
-
-		// Buttons to toggle difficulty
 		JButton btnEasy = createDiffButton("Easy", true);
 		JButton btnMed = createDiffButton("Medium", false);
 		JButton btnHard = createDiffButton("Hard", false);
 
+		diffToggle.add(btnEasy);
+		diffToggle.add(btnMed);
+		diffToggle.add(btnHard);
+		formCard.add(diffToggle, gbc);
+
+		// Dynamic Info Panel
+		gbc.gridy++;
+		RoundedPanel diffInfoPanel = new RoundedPanel(20, new Color(40, 180, 100));
+		diffInfoPanel.setLayout(new BoxLayout(diffInfoPanel, BoxLayout.Y_AXIS));
+		diffInfoPanel.setBorder(BorderFactory.createEmptyBorder(20, 25, 20, 25));
+
+		// Labels for info panel
+		JLabel dTitle = new JLabel("Easy");
+		dTitle.setFont(new Font("Segoe UI", Font.BOLD, 24));
+		dTitle.setForeground(Color.WHITE);
+		dTitle.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+		JLabel dBoard = new JLabel("✏ Board size: 9x9");
+		dBoard.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		dBoard.setForeground(Color.WHITE);
+		dBoard.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+		JLabel dMines = new JLabel("💣 Mines: 10 per board");
+		dMines.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		dMines.setForeground(Color.WHITE);
+		dMines.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+		JLabel dLives = new JLabel("♥ Starting lives: 10");
+		dLives.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		dLives.setForeground(Color.WHITE);
+		dLives.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+		JLabel dTag = new JLabel("Perfect for beginners");
+		dTag.setFont(new Font("Segoe UI", Font.ITALIC, 14));
+		dTag.setForeground(new Color(230, 230, 230));
+		dTag.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+		diffInfoPanel.add(dTitle);
+		diffInfoPanel.add(Box.createVerticalStrut(15));
+		diffInfoPanel.add(dBoard);
+		diffInfoPanel.add(Box.createVerticalStrut(8));
+		diffInfoPanel.add(dMines);
+		diffInfoPanel.add(Box.createVerticalStrut(8));
+		diffInfoPanel.add(dLives);
+		diffInfoPanel.add(Box.createVerticalStrut(15));
+		diffInfoPanel.add(dTag);
+
+		formCard.add(diffInfoPanel, gbc);
+
+		// Update Logic
 		Runnable updateDiffDiff = () -> {
 			if (btnEasy.getBackground().equals(Color.WHITE)) {
 				difficultyCombo.setSelectedIndex(0);
-				diffInfoPanel.setBackground(new Color(40, 180, 100)); // Green
-				diffInfoText.setText(
-						"<html><b>Easy</b><br>✏ 9x9 Board<br>💣 10 Mines &nbsp; ♥ 10 Lives<br>❓ 6 Questions &nbsp; 🎁 2 Surprises</html>");
+				diffInfoPanel.setGradient(new Color(46, 204, 113), new Color(39, 174, 96)); // Green
+				dTitle.setText("Easy");
+				dBoard.setText("✏ Board size: 9x9");
+				dMines.setText("💣 Mines: 10 per board");
+				dLives.setText("♥ Starting lives: 10");
+				dTag.setText("Perfect for beginners");
 			} else if (btnMed.getBackground().equals(Color.WHITE)) {
 				difficultyCombo.setSelectedIndex(1);
-				diffInfoPanel.setBackground(new Color(255, 140, 0)); // Orange
-				diffInfoText.setText(
-						"<html><b>Medium</b><br>✏ 13x13 Board<br>💣 26 Mines &nbsp; ♥ 8 Lives<br>❓ 7 Questions &nbsp; 🎁 3 Surprises</html>");
+				diffInfoPanel.setGradient(new Color(255, 167, 38), new Color(251, 140, 0)); // Orange
+				dTitle.setText("Medium");
+				dBoard.setText("✏ Board size: 13x13");
+				dMines.setText("💣 Mines: 26 per board");
+				dLives.setText("♥ Starting lives: 8");
+				dTag.setText("An exciting challenge");
 			} else {
 				difficultyCombo.setSelectedIndex(2);
-				diffInfoPanel.setBackground(new Color(220, 50, 70)); // Red
-				diffInfoText.setText(
-						"<html><b>Hard</b><br>✏ 16x16 Board<br>💣 44 Mines &nbsp; ♥ 6 Lives<br>❓ 11 Questions &nbsp; 🎁 4 Surprises</html>");
+				diffInfoPanel.setGradient(new Color(239, 83, 80), new Color(229, 57, 53)); // Red/Pink
+				dTitle.setText("Hard");
+				dBoard.setText("✏ Board size: 16x16");
+				dMines.setText("💣 Mines: 44 per board");
+				dLives.setText("♥ Starting lives: 6");
+				dTag.setText("Only for the brave");
 			}
 			diffInfoPanel.repaint();
 		};
 
 		ActionListener diffAction = e -> {
 			JButton source = (JButton) e.getSource();
-			// Reset styles
 			normalizeDiffButton(btnEasy);
 			normalizeDiffButton(btnMed);
 			normalizeDiffButton(btnHard);
-			// Highlight selected
 			source.setBackground(Color.WHITE);
 			source.setForeground(Color.BLACK);
 			updateDiffDiff.run();
@@ -285,26 +327,21 @@ public class GameView extends JFrame {
 		btnMed.addActionListener(diffAction);
 		btnHard.addActionListener(diffAction);
 
-		diffToggle.add(btnEasy);
-		diffToggle.add(btnMed);
-		diffToggle.add(btnHard);
-		formCard.add(diffToggle, gbc);
-
-		gbc.gridy++;
-		formCard.add(diffInfoPanel, gbc);
+		// Initial State
+		updateDiffDiff.run();
 
 		// Actions
 		gbc.gridy++;
 		gbc.insets = new Insets(25, 0, 10, 0);
 		startButton = createGradientButton("▷ Start Game", new Color(170, 40, 180), new Color(200, 60, 210));
 		startButton.setFont(new Font("Segoe UI", Font.BOLD, 18));
-		startButton.setPreferredSize(new Dimension(200, 50));
+		startButton.setPreferredSize(new Dimension(200, 80));
 		formCard.add(startButton, gbc);
 
 		gbc.gridy++;
 		gbc.insets = new Insets(0, 0, 0, 0);
 		demoButton = createGradientButton("🤖 Play with AI", new Color(60, 60, 80), new Color(80, 80, 100));
-		demoButton.setPreferredSize(new Dimension(200, 45));
+		demoButton.setPreferredSize(new Dimension(200, 80));
 		formCard.add(demoButton, gbc);
 
 		gridPanel.add(formCard);
@@ -444,6 +481,7 @@ public class GameView extends JFrame {
 	class RoundedPanel extends JPanel {
 		private int radius;
 		private Color bgColor;
+		private Color bgStart, bgEnd;
 
 		public RoundedPanel(int radius, Color bgColor) {
 			this.radius = radius;
@@ -451,11 +489,17 @@ public class GameView extends JFrame {
 			setOpaque(false);
 		}
 
-		@Override
+		public void setGradient(Color start, Color end) {
+			this.bgStart = start;
+			this.bgEnd = end;
+			this.bgColor = null; // Prioritize gradient
+		}
+
 		public void setBackground(Color bg) {
-			super.setBackground(bg);
 			this.bgColor = bg;
-			repaint();
+			this.bgStart = null;
+			this.bgEnd = null;
+			super.setBackground(bg);
 		}
 
 		@Override
@@ -463,7 +507,13 @@ public class GameView extends JFrame {
 			super.paintComponent(g);
 			Graphics2D g2 = (Graphics2D) g;
 			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-			g2.setColor(bgColor != null ? bgColor : getBackground());
+
+			if (bgStart != null && bgEnd != null) {
+				GradientPaint gp = new GradientPaint(0, 0, bgStart, getWidth(), getHeight(), bgEnd);
+				g2.setPaint(gp);
+			} else {
+				g2.setColor(bgColor != null ? bgColor : getBackground());
+			}
 			g2.fillRoundRect(0, 0, getWidth(), getHeight(), radius, radius);
 		}
 	}
