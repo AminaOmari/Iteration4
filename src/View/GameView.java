@@ -21,6 +21,8 @@ public class GameView extends JFrame {
 	private JPanel startPanel;
 	private JPanel gamePanel;
 	private JPanel statusPanel;
+	private HistoryView historyView;
+	private QuestionView questionView;
 
 	// Start screen components
 	private JTextField player1NameField;
@@ -87,15 +89,21 @@ public class GameView extends JFrame {
 	public GameView() {
 		setTitle("MineSweeper - Rhino Team");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setMinimumSize(new Dimension(1400, 900));
+		setMinimumSize(new Dimension(1100, 750));
+		setExtendedState(JFrame.MAXIMIZED_BOTH);
 
 		mainPanel = new JPanel(new CardLayout());
 
 		createStartPanel();
 		createGamePanel();
 
+		historyView = new HistoryView(this);
+		questionView = new QuestionView(this);
+
 		mainPanel.add(startPanel, "START");
 		mainPanel.add(gamePanel, "GAME");
+		mainPanel.add(historyView, "HISTORY");
+		mainPanel.add(questionView, "QUESTIONS");
 
 		add(mainPanel);
 		showStartScreen();
@@ -139,12 +147,12 @@ public class GameView extends JFrame {
 		nav.setOpaque(false);
 		nav.add(createNavButton("🏠 Home", true));
 
-		JButton manageBtn = createNavButton("📝 Questions & History", false);
-		manageBtn.addActionListener(e -> showManagementView());
+		JButton manageBtn = createNavButton("📝 Questions", false);
+		manageBtn.addActionListener(e -> showQuestionView());
 		nav.add(manageBtn);
 
-		JButton statsBtn = createNavButton("📊 Statistics", false);
-		statsBtn.addActionListener(e -> showStatisticsView());
+		JButton statsBtn = createNavButton("⏱ History", false);
+		statsBtn.addActionListener(e -> showHistoryView());
 		nav.add(statsBtn);
 
 		header.add(nav, BorderLayout.EAST);
@@ -155,6 +163,8 @@ public class GameView extends JFrame {
 		mainContent.setLayout(new BoxLayout(mainContent, BoxLayout.Y_AXIS));
 		mainContent.setOpaque(false);
 		mainContent.setBorder(BorderFactory.createEmptyBorder(10, 80, 40, 80));
+
+		mainContent.add(Box.createVerticalGlue());
 
 		// Hero Title
 		JLabel title = new JLabel("Welcome to MineSweeper");
@@ -348,13 +358,15 @@ public class GameView extends JFrame {
 		gridPanel.add(rightCol);
 
 		mainContent.add(gridPanel);
+		mainContent.add(Box.createVerticalGlue());
 		startPanel.add(mainContent, BorderLayout.CENTER);
 	}
 
-	private void showStatisticsView() {
-		SwingUtilities.invokeLater(() -> {
-			new StatisticsView().setVisible(true);
-		});
+	public void showHistoryView() {
+		CardLayout cl = (CardLayout) mainPanel.getLayout();
+		cl.show(mainPanel, "HISTORY");
+		if (historyView != null)
+			historyView.refresh();
 	}
 
 	// --- Helper Methods ---
@@ -1357,9 +1369,11 @@ public class GameView extends JFrame {
 	/**
 	 * Shows the management window for questions and history.
 	 */
-	private void showManagementView() {
-		ManagementView managementView = new ManagementView();
-		managementView.setVisible(true);
+	public void showQuestionView() {
+		CardLayout cl = (CardLayout) mainPanel.getLayout();
+		cl.show(mainPanel, "QUESTIONS");
+		if (questionView != null)
+			questionView.refresh();
 	}
 
 	/**
