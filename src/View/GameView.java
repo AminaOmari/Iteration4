@@ -107,41 +107,6 @@ public class GameView extends JFrame {
 	 * Creates the start/welcome screen panel with modern design.
 	 */
 	// Particle class for background animation
-	private class Particle {
-		double x, y, speed, size, angle;
-		int type; // 0=mine, 1=question, 2=flag
-
-		Particle(int width, int height) {
-			reset(width, height, true);
-		}
-
-		void reset(int width, int height, boolean scatter) {
-			x = scatter ? Math.random() * width : Math.random() * width;
-			y = scatter ? Math.random() * height : height + 50;
-			speed = 0.5 + Math.random() * 1.5;
-			size = 15 + Math.random() * 20;
-			angle = Math.random() * 360;
-			type = (int) (Math.random() * 3);
-		}
-
-		void update(int width, int height) {
-			y -= speed;
-			angle += 1;
-			if (y < -50)
-				reset(width, height, false);
-		}
-
-		void draw(Graphics2D g2) {
-			AffineTransform old = g2.getTransform();
-			g2.translate(x, y);
-			g2.rotate(Math.toRadians(angle));
-			g2.setColor(new Color(255, 255, 255, 30)); // Transparent white
-			g2.setFont(new Font("Segoe UI Emoji", Font.PLAIN, (int) size));
-			String symbol = type == 0 ? "💣" : (type == 1 ? "❓" : "🚩");
-			g2.drawString(symbol, 0, 0);
-			g2.setTransform(old);
-		}
-	}
 
 	private void createStartPanel() {
 		// Custom panel with animated background
@@ -174,11 +139,11 @@ public class GameView extends JFrame {
 		nav.setOpaque(false);
 		nav.add(createNavButton("🏠 Home", true));
 
-		JButton manageBtn = createNavButton("Questions & History", false);
+		JButton manageBtn = createNavButton("📝 Questions & History", false);
 		manageBtn.addActionListener(e -> showManagementView());
 		nav.add(manageBtn);
 
-		JButton statsBtn = createNavButton("Statistics", false);
+		JButton statsBtn = createNavButton("📊 Statistics", false);
 		statsBtn.addActionListener(e -> showStatisticsView());
 		nav.add(statsBtn);
 
@@ -279,17 +244,17 @@ public class GameView extends JFrame {
 				difficultyCombo.setSelectedIndex(0);
 				diffInfoPanel.setBackground(new Color(40, 180, 100)); // Green
 				diffInfoText.setText(
-						"<html><b>Easy</b><br>✏ Board size: 9x9<br>💣 Mines: 10<br>♥ Perfect for beginners</html>");
+						"<html><b>Easy</b><br>✏ 9x9 Board<br>💣 10 Mines &nbsp; ♥ 10 Lives<br>❓ 6 Questions &nbsp; 🎁 2 Surprises</html>");
 			} else if (btnMed.getBackground().equals(Color.WHITE)) {
 				difficultyCombo.setSelectedIndex(1);
 				diffInfoPanel.setBackground(new Color(255, 140, 0)); // Orange
 				diffInfoText.setText(
-						"<html><b>Medium</b><br>✏ Board size: 13x13<br>💣 Mines: 26<br>♥ Balanced challenge</html>");
+						"<html><b>Medium</b><br>✏ 13x13 Board<br>💣 26 Mines &nbsp; ♥ 8 Lives<br>❓ 7 Questions &nbsp; 🎁 3 Surprises</html>");
 			} else {
 				difficultyCombo.setSelectedIndex(2);
 				diffInfoPanel.setBackground(new Color(220, 50, 70)); // Red
 				diffInfoText.setText(
-						"<html><b>Hard</b><br>✏ Board size: 16x16<br>💣 Mines: 44<br>♥ For experts only!</html>");
+						"<html><b>Hard</b><br>✏ 16x16 Board<br>💣 44 Mines &nbsp; ♥ 6 Lives<br>❓ 11 Questions &nbsp; 🎁 4 Surprises</html>");
 			}
 			diffInfoPanel.repaint();
 		};
