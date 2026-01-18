@@ -395,6 +395,20 @@ public class GameView extends JFrame {
 		gridPanel.add(rightCol);
 
 		mainContent.add(gridPanel);
+
+		// Responsiveness listener
+		startPanel.addComponentListener(new java.awt.event.ComponentAdapter() {
+			@Override
+			public void componentResized(java.awt.event.ComponentEvent e) {
+				if (startPanel.getWidth() < 950) {
+					gridPanel.setLayout(new GridLayout(2, 1, 0, 30));
+				} else {
+					gridPanel.setLayout(new GridLayout(1, 2, 40, 0));
+				}
+				gridPanel.revalidate();
+			}
+		});
+
 		mainContent.add(Box.createVerticalGlue());
 		startPanel.add(mainContent, BorderLayout.CENTER);
 	}
