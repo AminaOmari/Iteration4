@@ -202,9 +202,12 @@ public class HistoryView extends JPanel {
             javax.swing.table.DefaultTableCellRenderer centerRenderer = new javax.swing.table.DefaultTableCellRenderer();
             centerRenderer.setHorizontalAlignment(JLabel.CENTER);
             table.setDefaultRenderer(Object.class, centerRenderer);
-            table.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 14));
-            table.getTableHeader().setBackground(new Color(60, 50, 90));
-            table.getTableHeader().setForeground(Color.WHITE);
+            javax.swing.table.DefaultTableCellRenderer headerRenderer = new javax.swing.table.DefaultTableCellRenderer();
+            headerRenderer.setHorizontalAlignment(JLabel.CENTER);
+            headerRenderer.setBackground(new Color(60, 50, 90));
+            headerRenderer.setForeground(Color.WHITE);
+            headerRenderer.setFont(new Font("Segoe UI", Font.BOLD, 14));
+            table.getTableHeader().setDefaultRenderer(headerRenderer);
             table.setBackground(new Color(45, 35, 75));
             table.setForeground(Color.WHITE);
             table.setShowGrid(false);
