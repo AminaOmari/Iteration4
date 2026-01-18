@@ -6,7 +6,7 @@ import Control.GameController;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
-import java.awt.geom.AffineTransform; // Added for animation
+// Added for animation
 
 /**
  * Main view class for the MineSweeper game. Handles all GUI components and user
@@ -469,56 +469,6 @@ public class GameView extends JFrame {
 	}
 
 	/**
-	 * Creates a modern styled text field.
-	 */
-	private JTextField createModernTextField(String placeholderText) {
-		JTextField field = new JTextField(15);
-		field.setFont(new Font("Arial", Font.PLAIN, 16));
-		field.setBackground(Color.WHITE);
-		field.setForeground(Color.BLACK);
-		field.setBorder(BorderFactory.createCompoundBorder(
-				BorderFactory.createLineBorder(new Color(150, 150, 180), 1),
-				BorderFactory.createEmptyBorder(8, 12, 8, 12)));
-		field.setPreferredSize(new Dimension(250, 40));
-
-		// Add placeholder text
-		field.setText("");
-		field.putClientProperty("JTextField.placeholderText", placeholderText);
-
-		// Custom painting for placeholder
-		field.addFocusListener(new java.awt.event.FocusAdapter() {
-			@Override
-			public void focusGained(java.awt.event.FocusEvent e) {
-				field.repaint();
-			}
-
-			@Override
-			public void focusLost(java.awt.event.FocusEvent e) {
-				field.repaint();
-			}
-		});
-
-		// Override paint to show placeholder
-		field.setUI(new javax.swing.plaf.basic.BasicTextFieldUI() {
-			@Override
-			protected void paintSafely(Graphics g) {
-				super.paintSafely(g);
-				JTextField textField = (JTextField) getComponent();
-				if (textField.getText().isEmpty() && !textField.hasFocus()) {
-					Graphics2D g2 = (Graphics2D) g.create();
-					g2.setColor(new Color(150, 150, 150));
-					g2.setFont(textField.getFont());
-					g2.drawString(placeholderText, textField.getInsets().left,
-							g2.getFontMetrics().getAscent() + textField.getInsets().top);
-					g2.dispose();
-				}
-			}
-		});
-
-		return field;
-	}
-
-	/**
 	 * Creates a modern gradient button.
 	 */
 	private JButton createGradientButton(String text, Color color1, Color color2) {
@@ -550,142 +500,6 @@ public class GameView extends JFrame {
 		button.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
 		return button;
-	}
-
-	/**
-	 * Shows difficulty information dialog with styled cards.
-	 */
-	private void showDifficultyInfo() {
-		// Create custom dialog
-		JDialog dialog = new JDialog(this, "Difficulty Information", true);
-		dialog.setSize(700, 650);
-		dialog.setLocationRelativeTo(this);
-
-		// Main panel with gradient
-		JPanel mainPanel = new JPanel() {
-			@Override
-			protected void paintComponent(Graphics g) {
-				super.paintComponent(g);
-				Graphics2D g2d = (Graphics2D) g;
-				GradientPaint gp = new GradientPaint(0, 0, new Color(40, 30, 70), 0, getHeight(),
-						new Color(60, 45, 95));
-				g2d.setPaint(gp);
-				g2d.fillRect(0, 0, getWidth(), getHeight());
-			}
-		};
-		mainPanel.setLayout(new BorderLayout(0, 20));
-		mainPanel.setBorder(BorderFactory.createEmptyBorder(30, 30, 30, 30));
-
-		// Title
-		JLabel titleLabel = new JLabel("⚙️ Difficulty Levels", SwingConstants.CENTER);
-		titleLabel.setFont(new Font("Arial", Font.BOLD, 32));
-		titleLabel.setForeground(Color.WHITE);
-		mainPanel.add(titleLabel, BorderLayout.NORTH);
-
-		// Cards panel
-		JPanel cardsPanel = new JPanel();
-		cardsPanel.setLayout(new BoxLayout(cardsPanel, BoxLayout.Y_AXIS));
-		cardsPanel.setOpaque(false);
-
-		// Easy card
-		cardsPanel.add(createDifficultyCard("🟢 EASY", new Color(76, 175, 80), "9 × 9 Board (81 tiles)",
-				"💣 Mines: 10",
-				"❓ Questions: 6", "🎁 Surprises: 2", "❤️ Lives: 10", "⭐ Question Cost: 5 pts", "🎲 Surprise: ±8 pts"));
-
-		cardsPanel.add(Box.createVerticalStrut(15));
-
-		// Medium card
-		cardsPanel.add(createDifficultyCard("🟡 MEDIUM", new Color(255, 193, 7), "13 × 13 Board (169 tiles)",
-				"💣 Mines: 26", "❓ Questions: 7", "🎁 Surprises: 3", "❤️ Lives: 8", "⭐ Question Cost: 8 pts",
-				"🎲 Surprise: ±12 pts"));
-
-		cardsPanel.add(Box.createVerticalStrut(15));
-
-		// Hard card
-		cardsPanel.add(createDifficultyCard("🔴 HARD", new Color(244, 67, 54), "16 × 16 Board (256 tiles)",
-				"💣 Mines: 44", "❓ Questions: 11", "🎁 Surprises: 4", "❤️ Lives: 6", "⭐ Question Cost: 12 pts",
-				"🎲 Surprise: ±16 pts"));
-
-		JScrollPane scrollPane = new JScrollPane(cardsPanel);
-		scrollPane.setOpaque(false);
-		scrollPane.getViewport().setOpaque(false);
-		scrollPane.setBorder(null);
-		mainPanel.add(scrollPane, BorderLayout.CENTER);
-
-		// Close button
-		JButton closeBtn = new JButton("Got it!") {
-			@Override
-			protected void paintComponent(Graphics g) {
-				Graphics2D g2d = (Graphics2D) g;
-				g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-				g2d.setColor(getModel().isPressed() ? new Color(70, 100, 180)
-						: getModel().isRollover() ? new Color(100, 130, 210) : new Color(80, 110, 190));
-				g2d.fillRoundRect(0, 0, getWidth(), getHeight(), 10, 10);
-				super.paintComponent(g);
-			}
-		};
-		closeBtn.setFont(new Font("Arial", Font.BOLD, 16));
-		closeBtn.setForeground(Color.WHITE);
-		closeBtn.setContentAreaFilled(false);
-		closeBtn.setBorderPainted(false);
-		closeBtn.setFocusPainted(false);
-		closeBtn.setPreferredSize(new Dimension(150, 45));
-		closeBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
-		closeBtn.addActionListener(e -> dialog.dispose());
-
-		JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-		buttonPanel.setOpaque(false);
-		buttonPanel.add(closeBtn);
-		mainPanel.add(buttonPanel, BorderLayout.SOUTH);
-
-		dialog.add(mainPanel);
-		dialog.setVisible(true);
-	}
-
-	/**
-	 * Creates a modern difficulty info card.
-	 */
-	private JPanel createDifficultyCard(String title, Color accentColor, String... details) {
-		JPanel card = new JPanel() {
-			@Override
-			protected void paintComponent(Graphics g) {
-				Graphics2D g2d = (Graphics2D) g;
-				g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-				// Card background
-				g2d.setColor(new Color(55, 45, 85, 230));
-				g2d.fillRoundRect(0, 0, getWidth(), getHeight(), 15, 15);
-
-				// Accent border on left
-				g2d.setColor(accentColor);
-				g2d.fillRoundRect(0, 0, 6, getHeight(), 15, 15);
-			}
-		};
-		card.setOpaque(false);
-		card.setLayout(new BorderLayout(15, 10));
-		card.setBorder(BorderFactory.createEmptyBorder(20, 25, 20, 25));
-		card.setMaximumSize(new Dimension(600, 150));
-
-		// Title with badge
-		JLabel titleLabel = new JLabel(title);
-		titleLabel.setFont(new Font("Arial", Font.BOLD, 22));
-		titleLabel.setForeground(Color.WHITE);
-		card.add(titleLabel, BorderLayout.NORTH);
-
-		// Details grid
-		JPanel detailsPanel = new JPanel(new GridLayout(0, 2, 15, 8));
-		detailsPanel.setOpaque(false);
-
-		for (String detail : details) {
-			JLabel detailLabel = new JLabel(detail);
-			detailLabel.setFont(new Font("Arial", Font.PLAIN, 14));
-			detailLabel.setForeground(new Color(220, 220, 240));
-			detailsPanel.add(detailLabel);
-		}
-
-		card.add(detailsPanel, BorderLayout.CENTER);
-
-		return card;
 	}
 
 	/**

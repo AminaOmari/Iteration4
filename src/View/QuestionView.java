@@ -5,7 +5,7 @@ import Model.Question;
 import Model.QuestionBank;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableCellRenderer;
+
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import java.awt.*;
@@ -25,10 +25,8 @@ public class QuestionView extends JPanel {
     private static final Color CARD_BG = new Color(45, 35, 75);
     private static final Color BUTTON_PINK = new Color(200, 60, 120);
     private static final Color TEXT_GRAY = new Color(200, 200, 220);
-    private static final Color BUTTON_SUCCESS = new Color(40, 167, 69);
     private static final Color BUTTON_DANGER = new Color(220, 53, 69);
     private static final Color TABLE_HEADER = new Color(60, 50, 90);
-    private static final Color TABLE_ALTERNATE = new Color(40, 30, 70);
 
     public QuestionView(GameView mainView) {
         this.mainView = mainView;

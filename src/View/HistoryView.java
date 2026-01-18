@@ -4,9 +4,8 @@ import Model.GameHistory;
 import Model.HistoryManager;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.JTableHeader;
+
 import java.awt.*;
 import java.util.List;
 import java.util.Set;
