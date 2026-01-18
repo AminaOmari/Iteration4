@@ -363,22 +363,18 @@ public class GameView extends JFrame {
 		guideContent.add(helpTitle);
 		guideContent.add(Box.createVerticalStrut(15));
 
-		JTextArea helpText = new JTextArea(
-				"🎯 Goal: Reveal safely\n" +
-						"👥 Team: Shared lives\n" +
-						"❤ Lives: Watch out!\n" +
-						"❓ Answer questions\n" +
-						"🎁 Find surprises");
+		JLabel helpText = new JLabel("<html><body style='width: 250px; color: #DCDCF0;'>" +
+				"🎯 Goal: Reveal safely<br>" +
+				"👥 Team: Shared lives<br>" +
+				"❤ Lives: Watch out!<br>" +
+				"❓ Answer questions<br>" +
+				"🎁 Find surprises" +
+				"</body></html>");
 		helpText.setFont(new Font("Segoe UI", Font.PLAIN, 15));
-		helpText.setForeground(new Color(220, 220, 240));
-		helpText.setLineWrap(true);
-		helpText.setWrapStyleWord(true);
-		helpText.setOpaque(false);
-		helpText.setEditable(false);
 		helpText.setAlignmentX(Component.LEFT_ALIGNMENT);
 		guideContent.add(helpText);
 
-		guideContent.add(Box.createVerticalStrut(30));
+		guideContent.add(Box.createVerticalStrut(20));
 
 		// Cell Types Section
 		JLabel legendTitle = new JLabel("⚡ Cell Types");
@@ -386,12 +382,12 @@ public class GameView extends JFrame {
 		legendTitle.setForeground(Color.WHITE);
 		legendTitle.setAlignmentX(Component.LEFT_ALIGNMENT);
 		guideContent.add(legendTitle);
-		guideContent.add(Box.createVerticalStrut(15));
+		guideContent.add(Box.createVerticalStrut(10));
 
-		JPanel legendList = new JPanel(new GridLayout(4, 1, 0, 8)); // 8px gap
+		JPanel legendList = new JPanel(new GridLayout(4, 1, 0, 5)); // 5px gap
 		legendList.setOpaque(false);
 		legendList.setAlignmentX(Component.LEFT_ALIGNMENT);
-		legendList.setMaximumSize(new Dimension(Integer.MAX_VALUE, 240)); // Constrain height
+		legendList.setMaximumSize(new Dimension(Integer.MAX_VALUE, 200));
 
 		legendList.add(createLegendItem(" Mine", "Loses lives", new Color(180, 60, 60)));
 		legendList.add(createLegendItem("123 Number", "Adjacent mines", new Color(50, 90, 160)));
