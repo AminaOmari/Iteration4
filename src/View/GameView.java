@@ -1125,11 +1125,21 @@ public class GameView extends JFrame {
 				+ "<li><b>Right Click:</b> Flag/Unflag a mine 🚩.</li>"
 				+ "</ul>"
 
-				+ "<h3 style='color: #F1FA8C; margin-bottom: 5px;'>⭐ Scoring & Specials</h3>"
+				+ "<h3 style='color: #BD93F9; margin-bottom: 5px;'>⚡ Tile Types</h3>"
 				+ "<ul>"
-				+ "<li><b>Safe Reveal:</b> +10 points.</li>"
-				+ "<li><b>Questions ❓:</b> Answer correctly for bonus points.</li>"
-				+ "<li><b>Surprises 🎁:</b> Random rewards or penalties!</li>"
+				+ "<li><b>💣 Mine:</b> -1 Life</li>"
+				+ "<li><b>🔢 Number:</b> Shows mines around</li>"
+				+ "<li><b>🟦 Empty:</b> No mines around</li>"
+				+ "<li><b>❓ Question:</b> Answer for bonus</li>"
+				+ "<li><b>🎁 Surprise:</b> Good or Bad effect!</li>"
+				+ "</ul>"
+
+				+ "<h3 style='color: #F1FA8C; margin-bottom: 5px;'>⭐ Scoring (Easy/Med/Hard)</h3>"
+				+ "<ul>"
+				+ "<li><b>Safe Reveal:</b> +10 points</li>"
+				+ "<li><b>Activation Cost:</b> -5 / 8 / 12 pts</li>"
+				+ "<li><b>Surprise Effect:</b> ±8 / 12 / 16 pts</li>"
+				+ "<li><b>Correct Answer:</b> Bonus points!</li>"
 				+ "</ul>"
 				+ "</body></html>";
 
