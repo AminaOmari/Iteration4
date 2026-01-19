@@ -274,175 +274,319 @@ public class QuestionView extends JPanel {
 
     // ... [Same showAddQuestionDialog as before] ...
     private void showAddQuestionDialog() {
-        JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Add Question", true);
-        dialog.setSize(500, 500);
-        dialog.setLocationRelativeTo(this);
-        dialog.getContentPane().setBackground(BG_DARK);
-        dialog.setLayout(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(5, 5, 5, 5);
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        dialog.add(createWhiteLabel("Question:"), gbc);
-        gbc.gridx = 1;
-        gbc.gridwidth = 2;
-        JTextField questionField = new JTextField(30);
-        dialog.add(questionField, gbc);
-
-        JTextField[] optionFields = new JTextField[4];
-        for (int i = 0; i < 4; i++) {
-            gbc.gridx = 0;
-            gbc.gridy = i + 1;
-            gbc.gridwidth = 1;
-            dialog.add(createWhiteLabel("Option " + (i + 1) + ":"), gbc);
-            gbc.gridx = 1;
-            gbc.gridwidth = 2;
-            optionFields[i] = new JTextField(30);
-            dialog.add(optionFields[i], gbc);
-        }
-
-        gbc.gridx = 0;
-        gbc.gridy = 5;
-        gbc.gridwidth = 1;
-        dialog.add(createWhiteLabel("Correct (1-4):"), gbc);
-        gbc.gridx = 1;
-        gbc.gridwidth = 2;
-        JSpinner correctSpinner = new JSpinner(new SpinnerNumberModel(1, 1, 4, 1));
-        dialog.add(correctSpinner, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridx = 0;
-        gbc.gridy = 6;
-        gbc.gridwidth = 1;
-        dialog.add(createWhiteLabel("Level:"), gbc);
-        gbc.gridx = 1;
-        gbc.gridwidth = 2;
-        JComboBox<String> levelCombo = new JComboBox<>(new String[] { "Easy", "Medium", "Hard" });
-        dialog.add(levelCombo, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 7;
-        gbc.gridwidth = 3;
-        JPanel btnPanel = new JPanel(new FlowLayout());
-        btnPanel.setBackground(BG_DARK);
-        JButton saveBtn = new JButton("Save");
-        JButton cancelBtn = new JButton("Cancel");
-        saveBtn.addActionListener(e -> {
-            if (validateQuestionInput(questionField.getText(), optionFields)) {
-                if (isDuplicateQuestionText(questionField.getText(), -1)) {
-                    JOptionPane.showMessageDialog(dialog, "Question already exists!");
-                    return;
-                }
-                if (questionBank.addQuestion(questionField.getText(), optionFields[0].getText(),
-                        optionFields[1].getText(), optionFields[2].getText(), optionFields[3].getText(),
-                        (Integer) correctSpinner.getValue(),
-                        Difficulty.valueOf(levelCombo.getSelectedItem().toString().toUpperCase()))) {
-                    refresh();
-                    dialog.dispose();
-                    JOptionPane.showMessageDialog(this, "Question added!");
-                } else
-                    JOptionPane.showMessageDialog(this, "Error!");
-            }
-        });
-        cancelBtn.addActionListener(e -> dialog.dispose());
-        btnPanel.add(saveBtn);
-        btnPanel.add(cancelBtn);
-        dialog.add(btnPanel, gbc);
-        dialog.setVisible(true);
+        showQuestionEditorDialog(null);
     }
 
     private void showEditQuestionDialog(int questionId) {
-        Question question = questionBank.findQuestionById(questionId);
-        if (question == null)
-            return;
-        JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Edit Question", true);
-        dialog.setSize(500, 500);
+        Question q = questionBank.findQuestionById(questionId);
+        if (q != null) {
+            showQuestionEditorDialog(q);
+        }
+    }
+
+    /**
+     * Unified dialog for adding/editing questions with "Card View" aesthetics.
+     */
+    private void showQuestionEditorDialog(Question existingHelper) {
+        boolean isEdit = (existingHelper != null);
+        String title = isEdit ? "Edit Question" : "New Question";
+
+        JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), title, true);
+        dialog.setSize(600, 400);
         dialog.setLocationRelativeTo(this);
         dialog.getContentPane().setBackground(BG_DARK);
-        dialog.setLayout(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(5, 5, 5, 5);
-        gbc.fill = GridBagConstraints.HORIZONTAL;
+        dialog.setLayout(new BorderLayout());
 
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        dialog.add(createWhiteLabel("Question:"), gbc);
-        gbc.gridx = 1;
-        gbc.gridwidth = 2;
-        JTextField questionField = new JTextField(question.getQuestionText(), 30);
-        dialog.add(questionField, gbc);
+        // --- 1. Content Panel (Card Look) ---
+        JPanel cardPanel = new RoundedPanel(20, CARD_BG);
+        cardPanel.setLayout(new BorderLayout(0, 15));
+        cardPanel.setBorder(BorderFactory.createEmptyBorder(25, 30, 25, 30));
 
-        JTextField[] optionFields = new JTextField[4];
-        for (int i = 0; i < 4; i++) {
-            gbc.gridx = 0;
-            gbc.gridy = i + 1;
-            gbc.gridwidth = 1;
-            dialog.add(createWhiteLabel("Option " + (i + 1) + ":"), gbc);
-            gbc.gridx = 1;
-            gbc.gridwidth = 2;
-            optionFields[i] = new JTextField(question.getOption(i + 1), 30);
-            dialog.add(optionFields[i], gbc);
-        }
+        // Wrapped in a container for padding from window edges
+        JPanel container = new JPanel(new BorderLayout());
+        container.setOpaque(false);
+        container.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        container.add(cardPanel, BorderLayout.CENTER);
+        dialog.add(container, BorderLayout.CENTER);
 
-        gbc.gridx = 0;
-        gbc.gridy = 5;
-        gbc.gridwidth = 1;
-        dialog.add(createWhiteLabel("Correct (1-4):"), gbc);
-        gbc.gridx = 1;
-        gbc.gridwidth = 2;
-        JSpinner correctSpinner = new JSpinner(new SpinnerNumberModel(question.getCorrectAnswer(), 1, 4, 1));
-        dialog.add(correctSpinner, gbc);
+        // --- 2. Header (Level Selector + Save/Cancel) ---
+        JPanel header = new JPanel(new BorderLayout());
+        header.setOpaque(false);
 
-        gbc.gridx = 0;
-        gbc.gridx = 0;
-        gbc.gridy = 6;
-        gbc.gridwidth = 1;
-        dialog.add(createWhiteLabel("Level:"), gbc);
-        gbc.gridx = 1;
-        gbc.gridwidth = 2;
-        JComboBox<String> levelCombo = new JComboBox<>(new String[] { "Easy", "Medium", "Hard" });
-        String cl = question.getLevel();
-        if (cl.equalsIgnoreCase("easy"))
-            levelCombo.setSelectedItem("Easy");
-        else if (cl.equalsIgnoreCase("medium"))
-            levelCombo.setSelectedItem("Medium");
-        else if (cl.equalsIgnoreCase("hard"))
-            levelCombo.setSelectedItem("Hard");
-        else
-            levelCombo.setSelectedItem("Expert");
-        dialog.add(levelCombo, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 7;
-        gbc.gridwidth = 3;
-        JPanel btnPanel = new JPanel(new FlowLayout());
-        btnPanel.setBackground(BG_DARK);
-        JButton saveBtn = new JButton("Save");
-        JButton cancelBtn = new JButton("Cancel");
-        saveBtn.addActionListener(e -> {
-            if (validateQuestionInput(questionField.getText(), optionFields)) {
-                if (isDuplicateQuestionText(questionField.getText(), questionId)) {
-                    JOptionPane.showMessageDialog(dialog, "Duplicate!");
-                    return;
-                }
-                if (questionBank.updateQuestion(questionId, questionField.getText(), optionFields[0].getText(),
-                        optionFields[1].getText(), optionFields[2].getText(), optionFields[3].getText(),
-                        (Integer) correctSpinner.getValue(),
-                        Difficulty.valueOf(levelCombo.getSelectedItem().toString().toUpperCase()))) {
-                    refresh();
-                    dialog.dispose();
-                    JOptionPane.showMessageDialog(this, "Updated!");
-                } else
-                    JOptionPane.showMessageDialog(this, "Error!");
+        // Level Selector (Styled ComboBox)
+        String[] levels = { "Easy", "Medium", "Hard", "Expert" };
+        JComboBox<String> levelCombo = new JComboBox<>(levels);
+        levelCombo.setFont(new Font("Segoe UI", Font.BOLD, 12));
+        levelCombo.setRenderer(new DefaultListCellRenderer() {
+            @Override
+            public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected,
+                    boolean cellHasFocus) {
+                JLabel l = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                l.setOpaque(true);
+                l.setForeground(Color.WHITE);
+                l.setHorizontalAlignment(SwingConstants.CENTER);
+                String lvl = (String) value;
+                if (lvl.equalsIgnoreCase("Medium"))
+                    l.setBackground(new Color(255, 193, 7));
+                else if (lvl.equalsIgnoreCase("Hard"))
+                    l.setBackground(new Color(244, 67, 54));
+                else if (lvl.equalsIgnoreCase("Expert"))
+                    l.setBackground(new Color(139, 0, 0));
+                else
+                    l.setBackground(new Color(76, 175, 80)); // Easy
+                return l;
             }
         });
+
+        // Update combo background on selection
+        levelCombo.addActionListener(e -> {
+            String lvl = (String) levelCombo.getSelectedItem();
+            if (lvl.equalsIgnoreCase("Medium"))
+                levelCombo.setBackground(new Color(255, 193, 7));
+            else if (lvl.equalsIgnoreCase("Hard"))
+                levelCombo.setBackground(new Color(244, 67, 54));
+            else if (lvl.equalsIgnoreCase("Expert"))
+                levelCombo.setBackground(new Color(139, 0, 0));
+            else
+                levelCombo.setBackground(new Color(76, 175, 80));
+        });
+
+        if (isEdit) {
+            levelCombo.setSelectedItem(existingHelper.getLevel());
+        } else {
+            levelCombo.setSelectedItem("Easy");
+        }
+        // Trigger initial color
+        levelCombo.getActionListeners()[0].actionPerformed(null);
+
+        header.add(levelCombo, BorderLayout.WEST);
+
+        // Action Buttons
+        JPanel actions = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
+        actions.setOpaque(false);
+
+        JButton cancelBtn = createStyledButton("Cancel", new Color(100, 100, 100)); // Grey
+        cancelBtn.setPreferredSize(new Dimension(100, 35));
         cancelBtn.addActionListener(e -> dialog.dispose());
-        btnPanel.add(saveBtn);
-        btnPanel.add(cancelBtn);
-        dialog.add(btnPanel, gbc);
+
+        JButton saveBtn = createStyledButton("Save", new Color(70, 100, 240)); // Blue
+        saveBtn.setPreferredSize(new Dimension(100, 35));
+
+        actions.add(cancelBtn);
+        actions.add(saveBtn);
+        header.add(actions, BorderLayout.EAST);
+
+        cardPanel.add(header, BorderLayout.NORTH);
+
+        // --- 3. Question Input ---
+        JTextArea questionArea = new JTextArea();
+        questionArea.setLineWrap(true);
+        questionArea.setWrapStyleWord(true);
+        questionArea.setFont(new Font("Segoe UI", Font.BOLD, 22));
+        questionArea.setForeground(Color.WHITE);
+        questionArea.setBackground(CARD_BG);
+        questionArea.setCaretColor(Color.WHITE);
+        questionArea.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createMatteBorder(0, 0, 1, 0, new Color(100, 100, 120)),
+                BorderFactory.createEmptyBorder(5, 5, 5, 5)));
+
+        if (isEdit)
+            questionArea.setText(existingHelper.getQuestionText());
+        else
+            questionArea.setText("Enter question here...");
+
+        // Clear placeholder on focus
+        questionArea.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                if (questionArea.getText().equals("Enter question here...")) {
+                    questionArea.setText("");
+                }
+            }
+        });
+
+        cardPanel.add(questionArea, BorderLayout.CENTER);
+
+        // --- 4. Options Grid ---
+        JPanel optionsGrid = new JPanel(new GridLayout(2, 2, 20, 10));
+        optionsGrid.setOpaque(false);
+
+        OptionInputPanel[] optionPanels = new OptionInputPanel[4];
+        ButtonGroup bg = new ButtonGroup();
+
+        for (int i = 0; i < 4; i++) {
+            optionPanels[i] = new OptionInputPanel(i + 1);
+            bg.add(optionPanels[i].radioButton);
+            optionsGrid.add(optionPanels[i]);
+        }
+
+        if (isEdit) {
+            optionPanels[0].setText(existingHelper.getOption1());
+            optionPanels[1].setText(existingHelper.getOption2());
+            optionPanels[2].setText(existingHelper.getOption3());
+            optionPanels[3].setText(existingHelper.getOption4());
+            optionPanels[existingHelper.getCorrectAnswer() - 1].setSelected(true);
+        } else {
+            optionPanels[0].setSelected(true); // Default correct
+        }
+
+        cardPanel.add(optionsGrid, BorderLayout.SOUTH);
+
+        // --- Save Logic ---
+        saveBtn.addActionListener(e -> {
+            String qText = questionArea.getText().trim();
+            if (qText.isEmpty() || qText.equals("Enter question here...")) {
+                JOptionPane.showMessageDialog(dialog, "Please enter a question.");
+                return;
+            }
+
+            int correctAns = -1;
+            JTextField[] optFields = new JTextField[4]; // For validation helper
+            for (int i = 0; i < 4; i++) {
+                optFields[i] = optionPanels[i].textField;
+                if (optionPanels[i].radioButton.isSelected()) {
+                    correctAns = i + 1;
+                }
+            }
+
+            if (!validateQuestionInput(qText, optFields)) {
+                JOptionPane.showMessageDialog(dialog, "Please enter unique options for all answers.");
+                return;
+            }
+
+            // Check duplicates
+            if (isEdit) {
+                if (isDuplicateQuestionText(qText, existingHelper.getId())) {
+                    JOptionPane.showMessageDialog(dialog, "A question with this text already exists.");
+                    return;
+                }
+                // Update
+                questionBank.updateQuestion(existingHelper.getId(), qText,
+                        optFields[0].getText().trim(),
+                        optFields[1].getText().trim(),
+                        optFields[2].getText().trim(),
+                        optFields[3].getText().trim(),
+                        correctAns,
+                        Difficulty.valueOf(levelCombo.getSelectedItem().toString().toUpperCase()));
+            } else {
+                if (isDuplicateQuestionText(qText, -1)) {
+                    JOptionPane.showMessageDialog(dialog, "A question with this text already exists.");
+                    return;
+                }
+                // Add
+                questionBank.addQuestion(qText,
+                        optFields[0].getText().trim(),
+                        optFields[1].getText().trim(),
+                        optFields[2].getText().trim(),
+                        optFields[3].getText().trim(),
+                        correctAns,
+                        Difficulty.valueOf(levelCombo.getSelectedItem().toString().toUpperCase()));
+            }
+
+            refresh();
+            dialog.dispose();
+            JOptionPane.showMessageDialog(mainView, isEdit ? "Question Updated!" : "Question Added!");
+        });
+
+        // Show Dialog
         dialog.setVisible(true);
+    }
+
+    /**
+     * Inner class helper for Option Inputs in the Dialog.
+     * Looks like the "Option Panel" on the card but editable.
+     */
+    private class OptionInputPanel extends JPanel {
+        JRadioButton radioButton;
+        JTextField textField;
+
+        public OptionInputPanel(int displayIndex) {
+            super(new BorderLayout());
+            setOpaque(false);
+
+            // Border (Default dark)
+            setBorder(BorderFactory.createCompoundBorder(
+                    BorderFactory.createLineBorder(new Color(80, 70, 110), 1),
+                    BorderFactory.createEmptyBorder(5, 10, 5, 10)));
+
+            // Radio Button (Hidden but functional logic)
+            radioButton = new JRadioButton();
+            radioButton.setVisible(false);
+
+            // Label "1." "2." etc
+            JLabel numLabel = new JLabel(displayIndex + ". ");
+            numLabel.setForeground(TEXT_GRAY);
+            numLabel.setFont(new Font("Segoe UI", Font.BOLD, 14));
+            add(numLabel, BorderLayout.WEST);
+
+            // Text Field
+            textField = new JTextField();
+            textField.setOpaque(false);
+            textField.setForeground(Color.WHITE);
+            textField.setCaretColor(Color.WHITE);
+            textField.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+            textField.setBorder(null);
+            add(textField, BorderLayout.CENTER);
+
+            // Selection Logic (Clicking panel selects it)
+            this.addMouseListener(new java.awt.event.MouseAdapter() {
+                @Override
+                public void mousePressed(java.awt.event.MouseEvent e) {
+                    setSelected(true);
+                    textField.requestFocus();
+                }
+            });
+
+            // Interaction to update specific visual state is handled via a Timer or
+            // repainting loop?
+            // Easier: Override paintComponent or add a listener to the radio button
+            radioButton.addActionListener(e -> {
+                // Force repaint of parent's grid to update all borders
+                Container parent = getParent();
+                if (parent != null)
+                    parent.repaint();
+            });
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            // Update visual state based on selection
+            boolean isSelected = radioButton.isSelected();
+            Color borderColor = isSelected ? new Color(46, 204, 113) : new Color(80, 70, 110);
+            Color bgColor = isSelected ? new Color(46, 204, 113, 30) : new Color(0, 0, 0, 0);
+
+            // Update border directly locally
+            setBorder(BorderFactory.createCompoundBorder(
+                    BorderFactory.createLineBorder(borderColor, 1),
+                    BorderFactory.createEmptyBorder(5, 10, 5, 10)));
+            setBackground(bgColor);
+
+            // Manual fill for background because opaque is false
+            g.setColor(bgColor);
+            g.fillRect(0, 0, getWidth(), getHeight());
+
+            super.paintComponent(g);
+
+            // Draw "Correct" text if selected
+            if (isSelected) {
+                g.setColor(new Color(46, 204, 113));
+                g.setFont(new Font("Segoe UI", Font.BOLD, 12));
+                String check = "✓ Correct";
+                FontMetrics fm = g.getFontMetrics();
+                g.drawString(check, getWidth() - fm.stringWidth(check) - 10, getHeight() / 2 + 5);
+            }
+        }
+
+        public void setSelected(boolean b) {
+            radioButton.setSelected(b);
+            repaint();
+            // Repaint siblings to remove their selection highlight
+            if (getParent() != null)
+                getParent().repaint();
+        }
+
+        public void setText(String t) {
+            textField.setText(t);
+        }
     }
 
     private void deleteQuestion(int id) {
@@ -487,13 +631,6 @@ public class QuestionView extends JPanel {
                 return true;
         }
         return false;
-    }
-
-    private JLabel createWhiteLabel(String text) {
-        JLabel label = new JLabel(text);
-        label.setForeground(Color.WHITE);
-        label.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        return label;
     }
 
     private JButton createNavButton(String text, boolean active) {
