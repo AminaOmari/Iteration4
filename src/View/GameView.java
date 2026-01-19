@@ -45,9 +45,11 @@ public class GameView extends JFrame {
 	private JLabel currentPlayerLabel;
 	private JLabel player1ScoreLabel;
 	private JLabel player2ScoreLabel;
-	private JLabel totalScoreLabel; // New Total Score
+	private JLabel totalScoreLabel;
 	private JLabel messageLabel;
-	private JLabel minesLabel;
+	private JLabel minesLabel; // Global mines count (Center)
+	private JLabel board1MinesLabel; // Board 1 specific
+	private JLabel board2MinesLabel; // Board 2 specific
 	private JButton helpButton;
 
 	// Store player names for display
@@ -615,123 +617,195 @@ public class GameView extends JFrame {
 	 * theme.
 	 */
 	private void createGamePanel() {
-		// Custom panel with gradient background
-		gamePanel = new JPanel(new BorderLayout(10, 10)) {
+		// Custom panel with gradient background (Consistent Theme)
+		gamePanel = new JPanel(new BorderLayout(0, 0)) {
 			@Override
 			protected void paintComponent(Graphics g) {
 				super.paintComponent(g);
 				Graphics2D g2d = (Graphics2D) g;
 				g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-
-				// Gradient from dark purple to medium purple (Consistent Theme)
 				GradientPaint gp = new GradientPaint(0, 0, BACKGROUND_DARK, 0, getHeight(), BACKGROUND_MEDIUM);
 				g2d.setPaint(gp);
 				g2d.fillRect(0, 0, getWidth(), getHeight());
 			}
 		};
-		gamePanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-		// Status panel at top - modern theme
-		statusPanel = new JPanel(new BorderLayout());
-		statusPanel.setBackground(STATUS_BAR);
-		statusPanel.setBorder(BorderFactory.createCompoundBorder(
-				BorderFactory.createLineBorder(new Color(60, 50, 90), 1),
-				BorderFactory.createEmptyBorder(10, 15, 10, 15)));
+		// --- 1. HEADER (Top Bar) ---
+		JPanel header = new JPanel(new BorderLayout());
+		header.setOpaque(false);
+		header.setBorder(BorderFactory.createEmptyBorder(15, 30, 15, 30));
 
-		// --- LEFT: SCORES ---
-		JPanel leftScorePanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 20, 0));
-		leftScorePanel.setOpaque(false);
+		// Logo / Title
+		JPanel branding = new JPanel(new FlowLayout(FlowLayout.LEFT, 15, 0));
+		branding.setOpaque(false);
+		JLabel logoIcon = new JLabel("💣"); // Placeholder icon
+		logoIcon.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 28));
+		logoIcon.setForeground(new Color(255, 100, 150));
 
-		totalScoreLabel = createLargeStatusLabel("Team Score: 0");
-		totalScoreLabel.setForeground(new Color(255, 215, 0)); // Gold for visibility
+		JPanel titles = new JPanel(new GridLayout(2, 1));
+		titles.setOpaque(false);
+		JLabel appTitle = new JLabel("MineSweeper");
+		appTitle.setFont(new Font("Segoe UI", Font.BOLD, 22));
+		appTitle.setForeground(Color.WHITE);
+		JLabel appSubtitle = new JLabel("Two Player Game");
+		appSubtitle.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+		appSubtitle.setForeground(new Color(180, 180, 200));
+		titles.add(appTitle);
+		titles.add(appSubtitle);
 
-		player1ScoreLabel = createStatusLabel("P1: 0");
-		player1ScoreLabel.setFont(new Font("Arial", Font.PLAIN, 14));
-		player2ScoreLabel = createStatusLabel("P2: 0");
-		player2ScoreLabel.setFont(new Font("Arial", Font.PLAIN, 14));
+		branding.add(logoIcon);
+		branding.add(titles);
+		header.add(branding, BorderLayout.WEST);
 
-		leftScorePanel.add(totalScoreLabel);
-		leftScorePanel.add(player1ScoreLabel);
-		leftScorePanel.add(player2ScoreLabel);
+		// Navigation
+		JPanel nav = new JPanel(new FlowLayout(FlowLayout.RIGHT, 15, 0));
+		nav.setOpaque(false);
 
-		statusPanel.add(leftScorePanel, BorderLayout.WEST);
+		JButton homeBtn = createNavButton("🏠 Home", false);
+		homeBtn.setPreferredSize(new Dimension(100, 35)); // Bigger buttons
+		homeBtn.addActionListener(e -> showStartScreen());
 
-		// --- CENTER: GAME STATUS ---
-		JPanel centerStatusPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 25, 0));
-		centerStatusPanel.setOpaque(false);
+		JButton qBtn = createNavButton("📝 Questions", false);
+		qBtn.setPreferredSize(new Dimension(130, 35));
+		qBtn.addActionListener(e -> showQuestionView());
 
-		currentPlayerLabel = createLargeStatusLabel("⏳ Turn: -");
-		livesLabel = createLargeStatusLabel("❤ Lives: 10");
-		minesLabel = createStatusLabel("💣 Mines: 0");
+		JButton hBtn = createNavButton("⏱ History", false);
+		hBtn.setPreferredSize(new Dimension(110, 35));
+		hBtn.addActionListener(e -> showHistoryView());
 
-		centerStatusPanel.add(currentPlayerLabel);
-		centerStatusPanel.add(livesLabel);
-		centerStatusPanel.add(minesLabel);
+		nav.add(homeBtn);
+		nav.add(qBtn);
+		nav.add(hBtn);
+		header.add(nav, BorderLayout.EAST);
 
-		statusPanel.add(centerStatusPanel, BorderLayout.CENTER);
+		// --- 2. STATUS BAR (Score, Lives, Players) ---
+		// Container for Status + Messages
+		JPanel topContainer = new JPanel();
+		topContainer.setLayout(new BoxLayout(topContainer, BoxLayout.Y_AXIS));
+		topContainer.setOpaque(false);
+		topContainer.setBorder(BorderFactory.createEmptyBorder(0, 30, 10, 30));
+		topContainer.add(header);
 
-		// --- RIGHT: ACTIONS ---
-		JPanel rightActionPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
-		rightActionPanel.setOpaque(false);
+		// Rounded Status Bar
+		JPanel statusBar = new JPanel(new BorderLayout()) {
+			@Override
+			protected void paintComponent(Graphics g) {
+				Graphics2D g2d = (Graphics2D) g;
+				g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+				g2d.setColor(new Color(45, 35, 75, 200)); // Semi-transparent dark
+				g2d.fillRoundRect(0, 0, getWidth(), getHeight(), 30, 30);
+				super.paintComponent(g);
+			}
+		};
+		statusBar.setOpaque(false);
+		statusBar.setBorder(BorderFactory.createEmptyBorder(15, 30, 15, 30));
+		statusBar.setMaximumSize(new Dimension(1200, 100));
 
-		// Rules Button
-		helpButton = createGradientButton("📜 Rules", new Color(70, 100, 180), new Color(90, 120, 200));
-		helpButton.setPreferredSize(new Dimension(90, 35));
-		helpButton.setFont(new Font("Arial", Font.BOLD, 12));
-		helpButton.addActionListener(e -> showGameRules());
+		// Status: Left (Player 1)
+		JPanel p1Status = new JPanel(new FlowLayout(FlowLayout.LEFT, 15, 0));
+		p1Status.setOpaque(false);
+		JLabel p1Icon = new JLabel("❶");
+		p1Icon.setFont(new Font("Segoe UI", Font.BOLD, 32));
+		p1Icon.setForeground(new Color(0, 180, 255)); // Blue
 
-		// Hint Button
-		JButton hintButton = createGradientButton("🤖 Hint", new Color(180, 140, 0), new Color(200, 160, 0));
-		hintButton.setPreferredSize(new Dimension(90, 35));
-		hintButton.setFont(new Font("Arial", Font.BOLD, 12));
-		hintButton.addActionListener(e -> {
-			if (controller != null)
-				controller.requestHint();
-		});
+		player1ScoreLabel = createStatusLabel("Player 1");
+		player1ScoreLabel.setFont(new Font("Segoe UI", Font.BOLD, 18));
 
-		rightActionPanel.add(helpButton);
-		rightActionPanel.add(hintButton);
+		p1Status.add(p1Icon);
+		p1Status.add(player1ScoreLabel);
 
-		statusPanel.add(rightActionPanel, BorderLayout.EAST);
+		// Status: Center (Score & Lives)
+		JPanel centerStatus = new JPanel(new GridLayout(2, 1, 0, 5));
+		centerStatus.setOpaque(false);
 
-		gamePanel.add(statusPanel, BorderLayout.NORTH);
+		// Team Score
+		JPanel scoreRow = new JPanel(new FlowLayout(FlowLayout.CENTER));
+		scoreRow.setOpaque(false);
+		JLabel scoreIcon = new JLabel("🏆 Score");
+		scoreIcon.setForeground(new Color(255, 215, 0));
+		scoreIcon.setFont(new Font("Segoe UI", Font.BOLD, 14));
+		totalScoreLabel = new JLabel("0");
+		totalScoreLabel.setForeground(Color.WHITE);
+		totalScoreLabel.setFont(new Font("Segoe UI", Font.BOLD, 24));
+		scoreRow.add(scoreIcon);
+		scoreRow.add(Box.createHorizontalStrut(10));
+		scoreRow.add(totalScoreLabel);
 
-		// Main content: sidebars + boards
-		JPanel mainContentPanel = new JPanel(new BorderLayout(10, 0));
-		mainContentPanel.setOpaque(false);
+		// Lives
+		JPanel livesRow = new JPanel(new FlowLayout(FlowLayout.CENTER));
+		livesRow.setOpaque(false);
+		JLabel heartIcon = new JLabel("❤ Lives");
+		heartIcon.setForeground(new Color(255, 80, 80));
+		heartIcon.setFont(new Font("Segoe UI", Font.BOLD, 14));
+		livesLabel = new JLabel("❤❤❤❤❤❤❤❤❤❤"); // Visual hearts
+		livesLabel.setForeground(new Color(255, 80, 80));
+		livesLabel.setFont(new Font("Segoe UI Symbol", Font.PLAIN, 18));
+		livesRow.add(heartIcon);
+		livesRow.add(Box.createHorizontalStrut(10));
+		livesRow.add(livesLabel);
 
-		// LEFT SIDEBAR - Player 1 Pending Questions
-		player1QuestionsPanel = createPendingQuestionsPanel("Player 1 Questions");
-		mainContentPanel.add(player1QuestionsPanel, BorderLayout.WEST);
+		centerStatus.add(scoreRow);
+		centerStatus.add(livesRow);
 
-		// Boards panel in center
-		JPanel boardsContainer = new JPanel(new GridLayout(1, 2, 20, 0));
+		// Status: Right (Player 2)
+		JPanel p2Status = new JPanel(new FlowLayout(FlowLayout.RIGHT, 15, 0));
+		p2Status.setOpaque(false);
+
+		player2ScoreLabel = createStatusLabel("Player 2");
+		player2ScoreLabel.setFont(new Font("Segoe UI", Font.BOLD, 18));
+
+		JLabel p2Icon = new JLabel("❷");
+		p2Icon.setFont(new Font("Segoe UI", Font.BOLD, 32));
+		p2Icon.setForeground(new Color(255, 100, 150)); // Pink/Red
+
+		p2Status.add(player2ScoreLabel);
+		p2Status.add(p2Icon);
+
+		statusBar.add(p1Status, BorderLayout.WEST);
+		statusBar.add(centerStatus, BorderLayout.CENTER);
+		statusBar.add(p2Status, BorderLayout.EAST);
+
+		topContainer.add(statusBar);
+		topContainer.add(Box.createVerticalStrut(15));
+
+		// Message Label (Now at TOP)
+		messageLabel = createStatusLabel("Ready to start!");
+		messageLabel.setFont(new Font("Segoe UI", Font.BOLD, 16));
+		messageLabel.setForeground(new Color(100, 255, 150));
+		messageLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+		topContainer.add(messageLabel);
+
+		gamePanel.add(topContainer, BorderLayout.NORTH);
+
+		// --- 3. BOARDS (Center) ---
+		JPanel boardsWrapper = new JPanel(new GridBagLayout()); // Centers content
+		boardsWrapper.setOpaque(false);
+
+		JPanel boardsContainer = new JPanel(new GridLayout(1, 2, 30, 0));
 		boardsContainer.setOpaque(false);
 
-		// Player 1 board
-		JPanel board1Container = new JPanel(new BorderLayout(5, 5));
-		board1Container.setBackground(BOARD_CONTAINER);
-		board1Container.setBorder(BorderFactory.createCompoundBorder(
-				BorderFactory.createLineBorder(new Color(80, 70, 110), 2),
-				BorderFactory.createEmptyBorder(10, 10, 10, 10)));
-		JLabel board1Title = new JLabel("Board A", SwingConstants.CENTER);
-		board1Title.setFont(new Font("Arial", Font.BOLD, 16));
-		board1Title.setForeground(Color.WHITE);
-		board1Container.add(board1Title, BorderLayout.NORTH);
+		// Player 1 Board
+		JPanel board1Container = new JPanel(new BorderLayout());
+		board1Container.setOpaque(false);
+
+		// Header for Board 1
+		JPanel b1Head = createBoardHeader("Player 1", "Board 1", new Color(0, 180, 255));
+		board1Container.add(b1Head, BorderLayout.NORTH);
+
+		// Board Panel
 		board1Panel = new JPanel();
 		board1Panel.setOpaque(false);
 		board1Container.add(board1Panel, BorderLayout.CENTER);
 
-		// Player 2 board
-		JPanel board2Container = new JPanel(new BorderLayout(5, 5));
-		board2Container.setBackground(BOARD_CONTAINER);
-		board2Container.setBorder(BorderFactory.createCompoundBorder(
-				BorderFactory.createLineBorder(new Color(80, 70, 110), 2),
-				BorderFactory.createEmptyBorder(10, 10, 10, 10)));
-		JLabel board2Title = new JLabel("Board B", SwingConstants.CENTER);
-		board2Title.setFont(new Font("Arial", Font.BOLD, 16));
-		board2Title.setForeground(Color.WHITE);
-		board2Container.add(board2Title, BorderLayout.NORTH);
+		// Player 2 Board
+		JPanel board2Container = new JPanel(new BorderLayout());
+		board2Container.setOpaque(false);
+
+		// Header for Board 2
+		JPanel b2Head = createBoardHeader("Player 2", "Board 2", new Color(255, 100, 150));
+		board2Container.add(b2Head, BorderLayout.NORTH);
+
+		// Board Panel
 		board2Panel = new JPanel();
 		board2Panel.setOpaque(false);
 		board2Container.add(board2Panel, BorderLayout.CENTER);
@@ -739,30 +813,82 @@ public class GameView extends JFrame {
 		boardsContainer.add(board1Container);
 		boardsContainer.add(board2Container);
 
-		mainContentPanel.add(boardsContainer, BorderLayout.CENTER);
+		boardsWrapper.add(boardsContainer); // Add to GridBag to center
+		gamePanel.add(boardsWrapper, BorderLayout.CENTER);
 
-		// RIGHT SIDEBAR - Player 2 Pending Questions
-		player2QuestionsPanel = createPendingQuestionsPanel("Player 2 Questions");
-		mainContentPanel.add(player2QuestionsPanel, BorderLayout.EAST);
-
-		gamePanel.add(mainContentPanel, BorderLayout.CENTER);
-
-		// New game button at bottom
-		JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+		// Footer Buttons (Rules/Hint reused or new?)
+		// User asked for "Rules" and "Hint" to be readable and big.
+		// Use bottom panel for Actions
+		JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
 		bottomPanel.setOpaque(false);
+		bottomPanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 20, 0));
 
-		messageLabel = createStatusLabel(""); // Initialize message label
-		bottomPanel.add(messageLabel);
+		JButton rulesBtn = createGradientButton("📜 Game Rules", new Color(70, 70, 100), new Color(90, 90, 140));
+		rulesBtn.setPreferredSize(new Dimension(160, 45));
+		rulesBtn.addActionListener(e -> showGameRules());
 
-		JButton newGameButton = createGradientButton("🏠 Back to Start", new Color(220, 53, 69),
-				new Color(240, 73, 89));
-		newGameButton.setPreferredSize(new Dimension(200, 40));
-		newGameButton.addActionListener(e -> showStartScreen());
+		JButton hintBtn = createGradientButton("🤖 AI Hint", new Color(255, 170, 0), new Color(255, 200, 50));
+		hintBtn.setPreferredSize(new Dimension(160, 45));
+		hintBtn.addActionListener(e -> {
+			if (controller != null)
+				controller.requestHint();
+		});
 
-		bottomPanel.add(Box.createHorizontalStrut(20));
-		bottomPanel.add(newGameButton);
+		bottomPanel.add(rulesBtn);
+		bottomPanel.add(hintBtn);
 
 		gamePanel.add(bottomPanel, BorderLayout.SOUTH);
+	}
+
+	// Helper for Board Headers
+	private JPanel createBoardHeader(String pName, String sub, Color accent) {
+		JPanel p = new JPanel(new BorderLayout()) {
+			@Override
+			protected void paintComponent(Graphics g) {
+				Graphics2D g2d = (Graphics2D) g;
+				g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+				g2d.setColor(new Color(60, 50, 90, 200));
+				g2d.fillRoundRect(0, 0, getWidth(), getHeight(), 15, 15);
+				super.paintComponent(g);
+			}
+		};
+		p.setOpaque(false);
+		p.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
+
+		JPanel left = new JPanel(new GridLayout(2, 1));
+		left.setOpaque(false);
+		JLabel name = new JLabel(pName);
+		name.setFont(new Font("Segoe UI", Font.BOLD, 16));
+		name.setForeground(Color.WHITE);
+		JLabel subL = new JLabel(sub);
+		subL.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+		subL.setForeground(new Color(200, 200, 200));
+		left.add(name);
+		left.add(subL);
+
+		JPanel right = new JPanel(new GridLayout(2, 1));
+		right.setOpaque(false);
+		JLabel mLabel = new JLabel("Mines Left", SwingConstants.RIGHT);
+		mLabel.setFont(new Font("Segoe UI", Font.PLAIN, 10));
+		mLabel.setForeground(new Color(200, 200, 200));
+		JLabel mCount = new JLabel("?", SwingConstants.RIGHT); // Will update
+		mCount.setFont(new Font("Segoe UI", Font.BOLD, 16));
+		mCount.setForeground(Color.WHITE);
+
+		right.add(mLabel);
+		right.add(mCount);
+
+		// Assign to correct field
+		if (pName.contains("1")) {
+			board1MinesLabel = mCount;
+		} else {
+			board2MinesLabel = mCount;
+		}
+
+		p.add(left, BorderLayout.WEST);
+		p.add(right, BorderLayout.EAST);
+
+		return p;
 	}
 
 	/**
@@ -961,11 +1087,10 @@ public class GameView extends JFrame {
 	 */
 	public void updateScores(int totalScore, int p1Score, int p2Score) {
 		if (totalScoreLabel != null) {
-			totalScoreLabel.setText("⭐ Team Score: " + totalScore + " | ");
+			totalScoreLabel.setText(String.valueOf(totalScore));
 		}
-		player1ScoreLabel.setText(player1Name + ": " + p1Score);
-		player2ScoreLabel.setText(" | " + player2Name + ": " + p2Score);
-		// Don't overwrite messageLabel - it's used for game messages
+		player1ScoreLabel.setText(player1Name + " (" + p1Score + ")");
+		player2ScoreLabel.setText(player2Name + " (" + p2Score + ")");
 	}
 
 	public void updateMineCount(int count) {
@@ -1000,7 +1125,10 @@ public class GameView extends JFrame {
 	 * Updates mines count display.
 	 */
 	public void updateMinesCount(int board1Mines, int board2Mines) {
-		minesLabel.setText("💣 Mines: " + board1Mines + " | " + board2Mines);
+		if (board1MinesLabel != null)
+			board1MinesLabel.setText(String.valueOf(board1Mines));
+		if (board2MinesLabel != null)
+			board2MinesLabel.setText(String.valueOf(board2Mines));
 	}
 
 	/**
