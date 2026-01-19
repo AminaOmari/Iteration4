@@ -45,6 +45,7 @@ public class GameView extends JFrame {
 	private JLabel currentPlayerLabel;
 	private JLabel player1ScoreLabel;
 	private JLabel player2ScoreLabel;
+	private JLabel totalScoreLabel; // New Total Score
 	private JLabel messageLabel;
 	private JLabel minesLabel;
 	private JButton helpButton;
@@ -622,7 +623,7 @@ public class GameView extends JFrame {
 				Graphics2D g2d = (Graphics2D) g;
 				g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
 
-				// Gradient from dark purple to medium purple
+				// Gradient from dark purple to medium purple (Consistent Theme)
 				GradientPaint gp = new GradientPaint(0, 0, BACKGROUND_DARK, 0, getHeight(), BACKGROUND_MEDIUM);
 				g2d.setPaint(gp);
 				g2d.fillRect(0, 0, getWidth(), getHeight());
@@ -631,107 +632,67 @@ public class GameView extends JFrame {
 		gamePanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
 		// Status panel at top - modern theme
-		statusPanel = new JPanel();
-		statusPanel.setLayout(new BoxLayout(statusPanel, BoxLayout.Y_AXIS));
+		statusPanel = new JPanel(new BorderLayout());
 		statusPanel.setBackground(STATUS_BAR);
-		statusPanel.setBorder(BorderFactory.createEmptyBorder(15, 20, 15, 20));
+		statusPanel.setBorder(BorderFactory.createCompoundBorder(
+				BorderFactory.createLineBorder(new Color(60, 50, 90), 1),
+				BorderFactory.createEmptyBorder(10, 15, 10, 15)));
 
-		// Top row: Lives and Turn (centered) with Help button
-		JPanel topRow = new JPanel(new FlowLayout(FlowLayout.CENTER, 50, 0));
-		topRow.setBackground(STATUS_BAR);
-		topRow.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
+		// --- LEFT: SCORES ---
+		JPanel leftScorePanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 20, 0));
+		leftScorePanel.setOpaque(false);
 
-		livesLabel = createLargeStatusLabel("Lives: 0/10");
-		minesLabel = createLargeStatusLabel("💣 0"); // Mines remaining
+		totalScoreLabel = createLargeStatusLabel("Team Score: 0");
+		totalScoreLabel.setForeground(new Color(255, 215, 0)); // Gold for visibility
+
+		player1ScoreLabel = createStatusLabel("P1: 0");
+		player1ScoreLabel.setFont(new Font("Arial", Font.PLAIN, 14));
+		player2ScoreLabel = createStatusLabel("P2: 0");
+		player2ScoreLabel.setFont(new Font("Arial", Font.PLAIN, 14));
+
+		leftScorePanel.add(totalScoreLabel);
+		leftScorePanel.add(player1ScoreLabel);
+		leftScorePanel.add(player2ScoreLabel);
+
+		statusPanel.add(leftScorePanel, BorderLayout.WEST);
+
+		// --- CENTER: GAME STATUS ---
+		JPanel centerStatusPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 25, 0));
+		centerStatusPanel.setOpaque(false);
+
 		currentPlayerLabel = createLargeStatusLabel("⏳ Turn: -");
+		livesLabel = createLargeStatusLabel("❤ Lives: 10");
+		minesLabel = createStatusLabel("💣 Mines: 0");
 
-		// Help button with modern styling
-		helpButton = new JButton("Rules") {
-			@Override
-			protected void paintComponent(Graphics g) {
-				Graphics2D g2d = (Graphics2D) g;
-				g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-				g2d.setColor(getModel().isPressed() ? new Color(70, 100, 180)
-						: getModel().isRollover() ? new Color(90, 120, 200) : new Color(80, 110, 190));
-				g2d.fillRoundRect(0, 0, getWidth(), getHeight(), 20, 20);
-				super.paintComponent(g);
-			}
-		};
-		helpButton.setFont(new Font("Arial", Font.BOLD, 14));
-		helpButton.setForeground(Color.WHITE);
-		helpButton.setPreferredSize(new Dimension(100, 50));
-		helpButton.setToolTipText("Game Rules");
+		centerStatusPanel.add(currentPlayerLabel);
+		centerStatusPanel.add(livesLabel);
+		centerStatusPanel.add(minesLabel);
+
+		statusPanel.add(centerStatusPanel, BorderLayout.CENTER);
+
+		// --- RIGHT: ACTIONS ---
+		JPanel rightActionPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
+		rightActionPanel.setOpaque(false);
+
+		// Rules Button
+		helpButton = createGradientButton("📜 Rules", new Color(70, 100, 180), new Color(90, 120, 200));
+		helpButton.setPreferredSize(new Dimension(90, 35));
+		helpButton.setFont(new Font("Arial", Font.BOLD, 12));
 		helpButton.addActionListener(e -> showGameRules());
-		helpButton.setFocusPainted(false);
-		helpButton.setContentAreaFilled(false);
-		helpButton.setBorderPainted(false);
-		helpButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-		topRow.add(livesLabel);
-		topRow.add(Box.createHorizontalStrut(20));
-		// Removed minesLabel per user request
-		topRow.add(Box.createHorizontalStrut(20));
-		topRow.add(currentPlayerLabel);
-		topRow.add(helpButton);
-
-		// Ask AI Button
-		JButton hintButton = new JButton("🤖 Hint") {
-			@Override
-			protected void paintComponent(Graphics g) {
-				Graphics2D g2d = (Graphics2D) g;
-				g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-				g2d.setColor(getModel().isPressed() ? new Color(180, 140, 0)
-						: getModel().isRollover() ? new Color(220, 180, 20) : new Color(200, 160, 0));
-				g2d.fillRoundRect(0, 0, getWidth(), getHeight(), 20, 20);
-				super.paintComponent(g);
-			}
-		};
-		hintButton.setFont(new Font("Arial", Font.BOLD, 14));
-		hintButton.setForeground(Color.WHITE);
-		hintButton.setPreferredSize(new Dimension(100, 50));
-		hintButton.setToolTipText("Ask Smart Assistant");
+		// Hint Button
+		JButton hintButton = createGradientButton("🤖 Hint", new Color(180, 140, 0), new Color(200, 160, 0));
+		hintButton.setPreferredSize(new Dimension(90, 35));
+		hintButton.setFont(new Font("Arial", Font.BOLD, 12));
 		hintButton.addActionListener(e -> {
 			if (controller != null)
 				controller.requestHint();
 		});
-		hintButton.setFocusPainted(false);
-		hintButton.setContentAreaFilled(false);
-		hintButton.setBorderPainted(false);
-		hintButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-		topRow.add(Box.createHorizontalStrut(5));
-		topRow.add(hintButton);
+		rightActionPanel.add(helpButton);
+		rightActionPanel.add(hintButton);
 
-		// Middle row: Player Scores (centered)
-		JPanel middleRow = new JPanel(new FlowLayout(FlowLayout.CENTER, 50, 0));
-		middleRow.setBackground(STATUS_BAR);
-		middleRow.setMaximumSize(new Dimension(Integer.MAX_VALUE, 35));
-
-		player1ScoreLabel = createStatusLabel("Player 1: 0 pts");
-		player2ScoreLabel = createStatusLabel("Player 2: 0 pts");
-
-		middleRow.add(player1ScoreLabel);
-		middleRow.add(player2ScoreLabel);
-
-		// Bottom row: Message and Mines Count
-		JPanel bottomRow = new JPanel(new FlowLayout(FlowLayout.CENTER, 30, 0));
-		bottomRow.setBackground(STATUS_BAR);
-		bottomRow.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
-
-		messageLabel = createStatusLabel("");
-		messageLabel.setFont(new Font("Arial", Font.BOLD, 13));
-
-		minesLabel = createStatusLabel("💣 Mines: 0 | 0");
-		minesLabel.setFont(new Font("Arial", Font.BOLD, 13));
-
-		bottomRow.add(messageLabel);
-		bottomRow.add(minesLabel);
-
-		statusPanel.add(topRow);
-		statusPanel.add(Box.createVerticalStrut(8));
-		statusPanel.add(middleRow);
-		statusPanel.add(Box.createVerticalStrut(5));
-		statusPanel.add(bottomRow);
+		statusPanel.add(rightActionPanel, BorderLayout.EAST);
 
 		gamePanel.add(statusPanel, BorderLayout.NORTH);
 
@@ -747,12 +708,12 @@ public class GameView extends JFrame {
 		JPanel boardsContainer = new JPanel(new GridLayout(1, 2, 20, 0));
 		boardsContainer.setOpaque(false);
 
-		// Player 1 board - modern container
+		// Player 1 board
 		JPanel board1Container = new JPanel(new BorderLayout(5, 5));
 		board1Container.setBackground(BOARD_CONTAINER);
-		board1Container
-				.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(new Color(80, 70, 110), 2),
-						BorderFactory.createEmptyBorder(10, 10, 10, 10)));
+		board1Container.setBorder(BorderFactory.createCompoundBorder(
+				BorderFactory.createLineBorder(new Color(80, 70, 110), 2),
+				BorderFactory.createEmptyBorder(10, 10, 10, 10)));
 		JLabel board1Title = new JLabel("Board A", SwingConstants.CENTER);
 		board1Title.setFont(new Font("Arial", Font.BOLD, 16));
 		board1Title.setForeground(Color.WHITE);
@@ -761,12 +722,12 @@ public class GameView extends JFrame {
 		board1Panel.setOpaque(false);
 		board1Container.add(board1Panel, BorderLayout.CENTER);
 
-		// Player 2 board - modern container
+		// Player 2 board
 		JPanel board2Container = new JPanel(new BorderLayout(5, 5));
 		board2Container.setBackground(BOARD_CONTAINER);
-		board2Container
-				.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(new Color(80, 70, 110), 2),
-						BorderFactory.createEmptyBorder(10, 10, 10, 10)));
+		board2Container.setBorder(BorderFactory.createCompoundBorder(
+				BorderFactory.createLineBorder(new Color(80, 70, 110), 2),
+				BorderFactory.createEmptyBorder(10, 10, 10, 10)));
 		JLabel board2Title = new JLabel("Board B", SwingConstants.CENTER);
 		board2Title.setFont(new Font("Arial", Font.BOLD, 16));
 		board2Title.setForeground(Color.WHITE);
@@ -786,39 +747,21 @@ public class GameView extends JFrame {
 
 		gamePanel.add(mainContentPanel, BorderLayout.CENTER);
 
-		// New game button at bottom with modern styling
+		// New game button at bottom
 		JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 		bottomPanel.setOpaque(false);
 
-		JButton newGameButton = new JButton("🏠 Back to Start") {
-			@Override
-			protected void paintComponent(Graphics g) {
-				Graphics2D g2d = (Graphics2D) g;
-				g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		messageLabel = createStatusLabel(""); // Initialize message label
+		bottomPanel.add(messageLabel);
 
-				Color color1 = new Color(220, 53, 69);
-				Color color2 = new Color(240, 73, 89);
-
-				Color startColor = getModel().isPressed() ? color1.darker() : getModel().isRollover() ? color2 : color1;
-				Color endColor = getModel().isPressed() ? color2.darker()
-						: getModel().isRollover() ? color2.brighter() : color2;
-
-				GradientPaint gp = new GradientPaint(0, 0, startColor, 0, getHeight(), endColor);
-				g2d.setPaint(gp);
-				g2d.fillRoundRect(0, 0, getWidth(), getHeight(), 10, 10);
-
-				super.paintComponent(g);
-			}
-		};
-		newGameButton.setFont(new Font("Arial", Font.BOLD, 14));
-		newGameButton.setForeground(Color.WHITE);
-		newGameButton.setFocusPainted(false);
-		newGameButton.setContentAreaFilled(false);
-		newGameButton.setBorderPainted(false);
-		newGameButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		JButton newGameButton = createGradientButton("🏠 Back to Start", new Color(220, 53, 69),
+				new Color(240, 73, 89));
 		newGameButton.setPreferredSize(new Dimension(200, 40));
 		newGameButton.addActionListener(e -> showStartScreen());
+
+		bottomPanel.add(Box.createHorizontalStrut(20));
 		bottomPanel.add(newGameButton);
+
 		gamePanel.add(bottomPanel, BorderLayout.SOUTH);
 	}
 
@@ -1017,9 +960,11 @@ public class GameView extends JFrame {
 	 * parameters.
 	 */
 	public void updateScores(int totalScore, int p1Score, int p2Score) {
-		player1ScoreLabel.setText("👤 " + player1Name + ": " + p1Score + " pts");
-		player2ScoreLabel
-				.setText((player2Name.contains("Bot") ? "🤖 " : "👤 ") + player2Name + ": " + p2Score + " pts");
+		if (totalScoreLabel != null) {
+			totalScoreLabel.setText("⭐ Team Score: " + totalScore + " | ");
+		}
+		player1ScoreLabel.setText(player1Name + ": " + p1Score);
+		player2ScoreLabel.setText(" | " + player2Name + ": " + p2Score);
 		// Don't overwrite messageLabel - it's used for game messages
 	}
 
