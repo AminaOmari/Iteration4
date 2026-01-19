@@ -6,7 +6,6 @@ import Control.GameController;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
-// Added for animation
 
 /**
  * Main view class for the MineSweeper game. Handles all GUI components and user
@@ -270,7 +269,7 @@ public class GameView extends JFrame {
 		dLives.setForeground(Color.WHITE);
 		dLives.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-		JLabel dContent = new JLabel("📦 Content: 6 Q, 2 S");
+		JLabel dContent = new JLabel("📦 Content: 6 Questions, 2 Surprises");
 		dContent.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		dContent.setForeground(Color.WHITE);
 		dContent.setAlignmentX(Component.LEFT_ALIGNMENT);

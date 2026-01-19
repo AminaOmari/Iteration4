@@ -231,8 +231,25 @@ public class GameState {
 			SurpriseTile surpriseTile = (SurpriseTile) tile;
 
 			if (surpriseTile.getSurprise() == null) {
-				Surprise surprise = surpriseManager.getRandomSurprise();
-				surpriseTile.setSurprise(surprise);
+				Surprise template = surpriseManager.getRandomSurprise();
+
+				// Enforce Rules based on Difficulty
+				// Easy: ±8 pts, ±1 life
+				// Medium: ±12 pts, ±1 life
+				// Hard: ±16 pts, ±1 life
+				int diffPoints = difficulty.getSurprisePoints();
+
+				int finalPoints = template.isGood() ? diffPoints : -diffPoints;
+				int finalLives = template.isGood() ? 1 : -1;
+
+				Surprise dynamicSurprise = new Surprise(
+						template.getId(),
+						template.getMessage(),
+						finalPoints,
+						finalLives,
+						template.isGood());
+
+				surpriseTile.setSurprise(dynamicSurprise);
 			}
 
 			Surprise surprise = surpriseTile.getSurprise();
