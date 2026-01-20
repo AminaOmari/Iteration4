@@ -1409,4 +1409,31 @@ public class GameView extends JFrame {
 		timer.setRepeats(false);
 		timer.start();
 	}
+
+	/**
+	 * Shows a standard blocking dialog.
+	 */
+	public void showDialog(String message, String title, int messageType) {
+		JOptionPane.showMessageDialog(this, message, title, messageType);
+	}
+
+	/**
+	 * Shows a dialog that automatically closes after a set time.
+	 * Used for AI turns to avoid blocking the game loop indefinitely.
+	 */
+	public void showAutoClosingMessage(String message, String title, int messageType, int timeoutMs) {
+		JOptionPane pane = new JOptionPane(message, messageType);
+		JDialog dialog = pane.createDialog(this, title);
+		dialog.setModal(false); // Non-modal so it doesn't block EDT completely if we want async
+		// However, with invokeLater logic in bot, we might want it to block "briefly"
+		// or overlay.
+		// Making it non-modal ensures flow continues, but we want the user to SEE it.
+
+		// Timer to close
+		Timer timer = new Timer(timeoutMs, e -> dialog.dispose());
+		timer.setRepeats(false);
+		timer.start();
+
+		dialog.setVisible(true);
+	}
 }

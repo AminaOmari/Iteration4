@@ -259,9 +259,13 @@ public class GameController {
 				surpriseMessage += "Points: " + surprise.getPointsEffect() + "\n";
 				surpriseMessage += "Lives: " + surprise.getLivesEffect();
 
-				JOptionPane.showMessageDialog(view, surpriseMessage,
-						surprise.isGood() ? "Good Surprise!" : "Bad Surprise!",
-						surprise.isGood() ? JOptionPane.INFORMATION_MESSAGE : JOptionPane.WARNING_MESSAGE);
+				if (isAiTurn()) {
+					view.showAutoClosingMessage(surpriseMessage, surprise.isGood() ? "Good Surprise!" : "Bad Surprise!",
+							surprise.isGood() ? JOptionPane.INFORMATION_MESSAGE : JOptionPane.WARNING_MESSAGE, 1500);
+				} else {
+					view.showDialog(surpriseMessage, surprise.isGood() ? "Good Surprise!" : "Bad Surprise!",
+							surprise.isGood() ? JOptionPane.INFORMATION_MESSAGE : JOptionPane.WARNING_MESSAGE);
+				}
 			}
 
 			view.showMessage(result);
@@ -302,9 +306,14 @@ public class GameController {
 
 			if (gameState.isGameOver()) {
 				mineWarning += "\n\n❌ GAME OVER!\nNo lives remaining.";
-				JOptionPane.showMessageDialog(view, mineWarning, "Game Over!", JOptionPane.ERROR_MESSAGE);
+				// Game over is always blocking
+				view.showDialog(mineWarning, "Game Over!", JOptionPane.ERROR_MESSAGE);
 			} else {
-				JOptionPane.showMessageDialog(view, mineWarning, "Mine Hit!", JOptionPane.WARNING_MESSAGE);
+				if (isAiTurn()) {
+					view.showAutoClosingMessage(mineWarning, "Mine Hit!", JOptionPane.WARNING_MESSAGE, 1500);
+				} else {
+					view.showDialog(mineWarning, "Mine Hit!", JOptionPane.WARNING_MESSAGE);
+				}
 			}
 		}
 
@@ -361,6 +370,39 @@ public class GameController {
 		Question question = questionTile.getQuestion();
 		if (question == null) {
 			view.showMessage("No question available!");
+			return;
+		}
+
+		// AI Handling: Auto-answer
+		if (isAiTurn()) {
+			// Simulate "thinking" or picking a random answer
+			int simulatedAnswer = (int) (Math.random() * 4) + 1; // 1-4
+			boolean correct = question.isCorrect(simulatedAnswer);
+
+			String result = gameState.handleQuestionAnswer(questionTile, correct);
+			String msg = "🤖 AI Answered: Option " + simulatedAnswer + "\n\n" + result;
+
+			// Show auto-closing result
+			view.showAutoClosingMessage(msg, "AI Question Event",
+					correct ? JOptionPane.INFORMATION_MESSAGE : JOptionPane.WARNING_MESSAGE, 2000);
+
+			gameState.completeQuestionTileInteraction();
+			updateView();
+
+			if (gameState.isGameOver()) {
+				// Save history handled inside handleTileClick check usually, but safely do it
+				// here
+				// if needed
+				// For flow consistency, we let the updateView/GameOver checks handle the rest
+				if (!historySaved) {
+					GameHistory history = GameHistory.fromGameState(gameState);
+					HistoryManager.saveHistory(history);
+					historySaved = true;
+				}
+				view.showGameOver(gameState.getGameEndMessage(), gameState.isGameWon());
+			} else {
+				view.highlightActiveBoard(gameState.getCurrentPlayerIndex() + 1);
+			}
 			return;
 		}
 
@@ -514,5 +556,9 @@ public class GameController {
 
 	public int getCurrentPlayerIndex() {
 		return gameState.getCurrentPlayerIndex();
+	}
+
+	private boolean isAiTurn() {
+		return demoBot != null && gameState.getCurrentPlayerIndex() == 1; // Player 2 is Bot
 	}
 }
