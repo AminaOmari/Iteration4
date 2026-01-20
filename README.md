@@ -20,9 +20,9 @@ In this version, two players (human-human or human-AI) work together to clear th
 ### 1. Difficulty Details Button (Start Screen)
 Added an interactive **'Show Difficulty Details'** button on the start screen that displays comprehensive information about each difficulty level:
 *   Shows board size for each level (Easy: 9x9, Medium: 13x13, Hard: 16x16)
-*   Displays number of mines per difficulty level
-*   Explains trivia question frequency and difficulty
-*   Helps players make informed decisions before starting the game
+*   Displays number of mines and starting lives for each difficulty
+*   Details trivia mechanics: Question quantity, point costs, and score effects (e.g., Cost: 5pts | Effect: ±8)
+*   Helps players make informed decisions regarding risk/reward before starting
 
 ### 2. Play With AI Button & Implementation
 Dedicated **'🤖 Play With AI'** button enables single-player mode against a computer team-mate:
@@ -60,6 +60,17 @@ Professional animated welcome experience that creates engaging first impression:
 *   Modern gradient backgrounds and polished typography
 *   Implementation in `GameView.java` using custom `Particle` class
 
+### 6. Question Management System
+A comprehensive administration interface to manage the in-game trivia database:
+*   **'Questions'** button on the start screen navigation bar
+*   **Add/Edit/Delete:** Full control over the question bank
+*   **Editor UI:** Create questions with specific difficulties, correct answers, and multiple choice options
+*   **Validation:** Prevents duplicate questions and ensures data integrity
+
+### 7. Enhanced Game HUD
+*   **Total Team Score:** Prominently displayed at the top to track combined progress
+*   **Turn Indicators:** Clear visual cues for whose turn it is
+*   **Side Panels:** "Pending Questions" panels for each player to manage saved trivia strategies
 
 ## 🎮 How to Play
 
@@ -82,9 +93,13 @@ Clear all safe tiles on both boards OR correctly flag all mines.
 ### Scoring & Lives
 *   **Shared Lives:** Both players draw from the same heart pool. 
 *   **Points:** Earn points by revealing safe tiles and answering questions.
+*   **Total Team Score:** Combined score of both players displayed in the HUD.
 *   **End Game Bonus:** Any lives remaining above 10 at the end of the game are converted into bonus points!
 
 ## 🚀 How to Run
+**Prerequisites:**
+*   **Java Development Kit (JDK) 19.0.2** or higher.
+
 1.  Compile the Java source files in `src`.
 2.  Run the main class:
     ```bash
