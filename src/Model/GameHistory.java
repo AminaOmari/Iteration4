@@ -138,7 +138,7 @@ public class GameHistory {
 
 	public String getWinner() {
 		// Handle legacy data or new format
-		if ("Won".equalsIgnoreCase(winner) || "Lost".equalsIgnoreCase(winner)) {
+		if ("Won together".equalsIgnoreCase(winner) || "Lost together".equalsIgnoreCase(winner)) {
 			return winner;
 		}
 		// If legacy name/Tie: infer result from lives

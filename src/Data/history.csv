@@ -17,3 +17,5 @@ timestamp,player1,player2,player1Score,player2Score,totalScore,difficulty,winner
 2026-01-19 13:59:54,A,R,-7,11,4,HARD,Lost,0
 2026-01-19 15:13:59,i1,AI Bot,14,14,28,HARD,Lost,0
 2026-01-19 15:17:01,Player 1,AI Bot,-1,11,10,EASY,Lost,0
+2026-01-20 17:49:11,A,B,-9,24,15,MEDIUM,Lost,0
+2026-01-20 17:51:25,s,AI Bot,23,10,33,HARD,Lost,0
