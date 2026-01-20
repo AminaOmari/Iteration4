@@ -17,12 +17,12 @@ In this version, two players (human-human or human-AI) work together to clear th
 
 ## Enhanced User Experience Features
 
-### 1. Difficulty Details Button (Start Screen)
-Added an interactive **'Show Difficulty Details'** button on the start screen that displays comprehensive information about each difficulty level:
-*   Shows board size for each level (Easy: 9x9, Medium: 13x13, Hard: 16x16)
-*   Displays number of mines and starting lives for each difficulty
-*   Details trivia mechanics: Question quantity, point costs, and score effects (e.g., Cost: 5pts | Effect: ±8)
-*   Helps players make informed decisions regarding risk/reward before starting
+### 1. Interactive Difficulty Selection
+Instead of a static menu, the start screen features a dynamic **Difficulty Info Card** that updates instantly when you select a level:
+*   **Visual Feedback:** Click Easy, Medium, or Hard to see the card change color and content.
+*   **Comprehensive Stats:** Instantly view Board Size, Mine Count, and Starting Lives for the selected level.
+*   **Mechanics Preview:** Shows the specific configuration for Questions (quantity) and Scorable Rules (cost/effect) for that difficulty.
+*   **No Guesswork:** Players know exactly what they are getting into before hitting Start.
 
 ### 2. Play With AI Button & Implementation
 Dedicated **'🤖 Play With AI'** button enables single-player mode against a computer team-mate:
@@ -53,24 +53,18 @@ Innovative feature allowing players to defer trivia questions for strategic game
 *   Strategic depth: players can focus on board exploration and answer questions when ready
 *   Visual counter shows number of saved questions (e.g., 'Saved Questions: 3')
 
-### 5. Animated Start Screen
-Professional animated welcome experience that creates engaging first impression:
-*   Dynamic particle system with floating game elements (Mines, Flags, Questions)
-*   Smooth animation loop handled by `javax.swing.Timer`
-*   Modern gradient backgrounds and polished typography
-*   Implementation in `GameView.java` using custom `Particle` class
-
-### 6. Question Management System
+### 5. Question Management System
 A comprehensive administration interface to manage the in-game trivia database:
 *   **'Questions'** button on the start screen navigation bar
 *   **Add/Edit/Delete:** Full control over the question bank
 *   **Editor UI:** Create questions with specific difficulties, correct answers, and multiple choice options
 *   **Validation:** Prevents duplicate questions and ensures data integrity
 
-### 7. Enhanced Game HUD
+### 6. Enhanced Game HUD
 *   **Total Team Score:** Prominently displayed at the top to track combined progress
 *   **Turn Indicators:** Clear visual cues for whose turn it is
 *   **Side Panels:** "Pending Questions" panels for each player to manage saved trivia strategies
+
 
 ## 🎮 How to Play
 
