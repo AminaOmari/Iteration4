@@ -305,10 +305,16 @@ public class GameController {
 					+ "Lives lost: -1\n" + "Lives remaining: " + gameState.getSharedLives();
 
 			if (gameState.isGameOver()) {
+				// TRIGGER EXPLOSION
+				view.triggerExplosion(boardNum, row, col);
+
 				mineWarning += "\n\n❌ GAME OVER!\nNo lives remaining.";
 				// Game over is always blocking
 				view.showDialog(mineWarning, "Game Over!", JOptionPane.ERROR_MESSAGE);
 			} else {
+				// TRIGGER EXPLOSION
+				view.triggerExplosion(boardNum, row, col);
+
 				if (isAiTurn()) {
 					view.showAutoClosingMessage(mineWarning, "Mine Hit!", JOptionPane.WARNING_MESSAGE, 1500);
 				} else {
