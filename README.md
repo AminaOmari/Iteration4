@@ -45,6 +45,13 @@ Strategic depth for trivia questions:
 *   Saved questions appear in a dedicated side panel for each player.
 *   Strategy: Clear the board first, then answer questions when you need lives!
 
+### 6. 💬 Quick Chat & Visual Effects
+Communication is key in co-op!
+*   **Quick Actions:** Send instant messages ("Nice!", "Watch out", "Help!") with a single click.
+*   **Speech Bubbles:** Messages appear as floating animated bubbles above the board.
+*   **Particle Effects:** Celebratory confetti and visual feedback for interactions using a custom GlassPane overlay.
+*   **Dynamic Titles:** Boards now proudly display custom player names.
+
 ## 🎮 How to Play
 
 ### The Goal
