@@ -143,7 +143,8 @@ public class GameController {
 		// Calculate mines remaining
 		int totalMines = gameState.getDifficulty().getMineCount() * 2;
 		int flagsPlaced = gameState.getBoard1().getFlagCount() + gameState.getBoard2().getFlagCount();
-		view.updateMineCount(totalMines - flagsPlaced);
+		int revealedMines = gameState.getBoard1().getRevealedMineCount() + gameState.getBoard2().getRevealedMineCount();
+		view.updateMineCount(totalMines - flagsPlaced - revealedMines);
 
 		updateBoardDisplay(1);
 		updateBoardDisplay(2);
@@ -372,6 +373,28 @@ public class GameController {
 		Tile tile = board.getTile(row, col);
 
 		if (tile.isRevealed()) {
+			return;
+		}
+
+		// Special Rule: Flagging a mine reveals it and gives points
+		if (tile.isMine() && !tile.isFlagged()) {
+			tile.setRevealed(true);
+			gameState.addScore(1);
+
+			String msg = "Mine Found! +1 Point";
+			// Use auto-closing message to avoid disrupting flow
+			view.showAutoClosingMessage(msg, "Mine Found", JOptionPane.INFORMATION_MESSAGE, 1500);
+
+			updateView();
+
+			if (gameState.isGameOver()) {
+				if (!historySaved) {
+					GameHistory history = GameHistory.fromGameState(gameState);
+					HistoryManager.saveHistory(history);
+					historySaved = true;
+				}
+				view.showGameOver(gameState.getGameEndMessage(), gameState.isGameWon());
+			}
 			return;
 		}
 

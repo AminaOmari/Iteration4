@@ -491,8 +491,9 @@ public class Board {
 				Tile tile = tiles[row][col];
 
 				if (tile.isMine()) {
-					if (!tile.isFlagged())
-						return false; // Mine not flagged
+					// Mine is correctly handled if flagged OR revealed (found via flag check)
+					if (!tile.isFlagged() && !tile.isRevealed())
+						return false; // Mine not handled
 				} else {
 					if (tile.isFlagged())
 						return false; // Safe tile flagged (wrong!)
@@ -510,6 +511,22 @@ public class Board {
 		for (int row = 0; row < size; row++) {
 			for (int col = 0; col < size; col++) {
 				if (tiles[row][col].isFlagged()) {
+					count++;
+				}
+			}
+		}
+		return count;
+	}
+
+	/**
+	 * Counts how many mines have been revealed (found).
+	 */
+	public int getRevealedMineCount() {
+		int count = 0;
+		for (int row = 0; row < size; row++) {
+			for (int col = 0; col < size; col++) {
+				Tile tile = tiles[row][col];
+				if (tile.isMine() && tile.isRevealed()) {
 					count++;
 				}
 			}
