@@ -152,7 +152,7 @@ public class GameView extends JFrame {
 		header.setOpaque(false);
 		header.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 40));
 
-		JLabel logo = new JLabel("💣 MineSweeper");
+		JLabel logo = new JLabel("💣 MineSweeper - Team Rhino 🦏");
 		logo.setFont(new Font("Segoe UI", Font.BOLD, 26));
 		logo.setForeground(Color.WHITE);
 		header.add(logo, BorderLayout.WEST);
