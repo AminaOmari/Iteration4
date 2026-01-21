@@ -653,50 +653,64 @@ public class GameView extends JFrame {
 			}
 		};
 
-		// 1. TOP BAR (8% height)
-		// Organized: Score | Turn | Lives/Mines/Buttons
+		// 1. TOP BAR (New Design)
 		JPanel topBar = new JPanel(new BorderLayout());
-		topBar.setOpaque(false);
-		topBar.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
-		topBar.setPreferredSize(new Dimension(0, 80));
+		topBar.setBackground(STATUS_BAR);
+		topBar.setPreferredSize(new Dimension(0, 80)); // Taller for better spacing
+		topBar.setBorder(BorderFactory.createMatteBorder(0, 0, 2, 0, new Color(60, 50, 80)));
 
-		// LEFT: Team Score
-		JPanel scorePanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 15, 0));
+		// --- LEFT: SCORES ---
+		JPanel scorePanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 25, 20));
 		scorePanel.setOpaque(false);
-		totalScoreLabel = createLargeStatusLabel("⭐ Team Score: 0");
-		totalScoreLabel.setForeground(new Color(255, 215, 0));
-		player1ScoreLabel = createStatusLabel("A: 0");
-		player2ScoreLabel = createStatusLabel("B: 0");
+
+		totalScoreLabel = new JLabel("⭐ Team Score: 0");
+		totalScoreLabel.setFont(new Font("Segoe UI", Font.BOLD, 22)); // Larger font
+		totalScoreLabel.setForeground(new Color(255, 215, 0)); // Gold
+
+		player1ScoreLabel = new JLabel("A: 0");
+		player1ScoreLabel.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		player1ScoreLabel.setForeground(Color.WHITE);
+
+		player2ScoreLabel = new JLabel("B: 0");
+		player2ScoreLabel.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		player2ScoreLabel.setForeground(Color.WHITE);
+
 		scorePanel.add(totalScoreLabel);
 		scorePanel.add(new JLabel(" | ")).setForeground(Color.GRAY);
 		scorePanel.add(player1ScoreLabel);
 		scorePanel.add(new JLabel(" | ")).setForeground(Color.GRAY);
 		scorePanel.add(player2ScoreLabel);
-		topBar.add(scorePanel, BorderLayout.WEST);
 
-		// CENTER: Turn
-		JPanel turnPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+		// --- CENTER: TURN INDICATOR ---
+		JPanel turnPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 20));
 		turnPanel.setOpaque(false);
-		currentPlayerLabel = new JLabel("Turn: A");
-		currentPlayerLabel.setFont(new Font("Segoe UI", Font.BOLD, 24)); // Prominent
+
+		currentPlayerLabel = new JLabel("Turn: Player 1");
+		currentPlayerLabel.setFont(new Font("Segoe UI", Font.BOLD, 28)); // Much larger
 		currentPlayerLabel.setForeground(Color.WHITE);
 		turnPanel.add(currentPlayerLabel);
-		topBar.add(turnPanel, BorderLayout.CENTER);
 
-		// RIGHT: Stats + Buttons
-		JPanel statsPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 15, 0));
+		// --- RIGHT: STATS & TOOLS ---
+		JPanel statsPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 15, 20)); // Spaced out
 		statsPanel.setOpaque(false);
-		livesLabel = createStatusLabel("♥♥♥♥♥♥♥♥ Lives: 8");
-		minesLabel = createStatusLabel("💣 Mines: 26/26");
 
-		JButton rulesBtn = createGradientButton("Rules", new Color(60, 60, 80), new Color(80, 80, 100));
-		rulesBtn.setPreferredSize(new Dimension(80, 30));
-		rulesBtn.setFont(new Font("Segoe UI", Font.BOLD, 12));
+		livesLabel = new JLabel("Lives: 5");
+		livesLabel.setFont(new Font("Segoe UI", Font.BOLD, 16));
+		livesLabel.setForeground(Color.WHITE);
+
+		minesLabel = new JLabel("💣 Mines: 0");
+		minesLabel.setFont(new Font("Segoe UI", Font.BOLD, 16));
+		minesLabel.setForeground(Color.LIGHT_GRAY);
+
+		rulesBtn = new JButton("Rules");
+		styleButton(rulesBtn, new Color(70, 70, 90));
+		rulesBtn.setPreferredSize(new Dimension(80, 35));
 		rulesBtn.addActionListener(e -> showGameRules());
 
-		JButton hintBtn = createGradientButton("Hint", new Color(180, 140, 0), new Color(200, 160, 0));
-		hintBtn.setPreferredSize(new Dimension(80, 30));
-		hintBtn.setFont(new Font("Segoe UI", Font.BOLD, 12));
+		JButton hintBtn = new JButton("Hint");
+		styleButton(hintBtn, new Color(200, 160, 0)); // Goldish
+		hintBtn.setForeground(Color.BLACK);
+		hintBtn.setPreferredSize(new Dimension(80, 35));
 		hintBtn.addActionListener(e -> {
 			if (controller != null)
 				controller.requestHint();
@@ -705,9 +719,12 @@ public class GameView extends JFrame {
 		statsPanel.add(livesLabel);
 		statsPanel.add(new JLabel(" | ")).setForeground(Color.GRAY);
 		statsPanel.add(minesLabel);
-		statsPanel.add(Box.createHorizontalStrut(10));
+		statsPanel.add(Box.createHorizontalStrut(15)); // Extra Spacer
 		statsPanel.add(rulesBtn);
 		statsPanel.add(hintBtn);
+
+		topBar.add(scorePanel, BorderLayout.WEST);
+		topBar.add(turnPanel, BorderLayout.CENTER);
 		topBar.add(statsPanel, BorderLayout.EAST);
 
 		gamePanel.add(topBar, BorderLayout.NORTH);
@@ -1759,5 +1776,13 @@ public class GameView extends JFrame {
 		timer.start();
 
 		dialog.setVisible(true);
+	}
+
+	private void styleButton(JButton btn, Color bgColor) {
+		btn.setBackground(bgColor);
+		btn.setForeground(Color.WHITE);
+		btn.setFocusPainted(false);
+		btn.setFont(new Font("Segoe UI", Font.BOLD, 12));
+		btn.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
 	}
 }
