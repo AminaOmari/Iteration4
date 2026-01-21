@@ -710,7 +710,7 @@ public class GameView extends JFrame {
 		rulesBtn.setPreferredSize(new Dimension(100, 35));
 		rulesBtn.addActionListener(e -> showGameRules());
 
-		JButton hintBtn = new JButton("💡 Hint");
+		JButton hintBtn = new JButton("🤖 Hint");
 		styleButton(hintBtn, new Color(200, 160, 0)); // Goldish
 		hintBtn.setForeground(Color.BLACK);
 		hintBtn.setPreferredSize(new Dimension(100, 35));
