@@ -12,6 +12,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class HistoryView extends JPanel {
+    private static final long serialVersionUID = 1L;
     private GameView mainView; // Reference to main view for navigation
     private JPanel contentPanel;
     private DefaultTableModel tableModel;

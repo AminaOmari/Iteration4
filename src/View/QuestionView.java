@@ -12,6 +12,7 @@ import java.util.Set;
 import java.util.HashSet;
 
 public class QuestionView extends JPanel {
+    private static final long serialVersionUID = 1L;
     private GameView mainView;
     private JPanel contentPanel;
     private JPanel questionsListPanel; // Panel to hold question cards

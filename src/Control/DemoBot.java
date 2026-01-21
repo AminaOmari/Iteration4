@@ -6,7 +6,14 @@ import java.util.Random;
 import javax.swing.SwingUtilities;
 
 /**
- * AI Bot Logic for Demo Mode.
+ * AI Bot Logic for "Play with AI" Demo Mode.
+ * <p>
+ * This class runs on a separate thread and simulates a second player.
+ * It periodically checks if it's Player 2's turn and makes random valid moves.
+ * <p>
+ * 
+ * @author Team Rhino
+ * @version 1.0
  */
 public class DemoBot implements Runnable {
     private final GameController controller;

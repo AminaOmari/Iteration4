@@ -14,6 +14,7 @@ import java.awt.*;
  * - Input field
  */
 public class ChatPanel extends JPanel {
+    private static final long serialVersionUID = 1L;
     private JPanel messagesArea;
     private JTextField inputField;
     private JScrollPane scrollPane;

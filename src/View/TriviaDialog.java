@@ -14,6 +14,7 @@ import java.awt.event.ActionListener;
  * @version 2.0 - Iteration 2
  */
 public class TriviaDialog extends JDialog {
+	private static final long serialVersionUID = 1L;
 	private int selectedAnswer = -1; // -1 means no answer, 1-4 for answers
 	private Question question;
 	private JButton[] answerButtons;

@@ -168,7 +168,19 @@ public class GameController {
 	}
 
 	/**
-	 * ONE-CLICK VERSION: Q and S tiles activate immediately.
+	 * Handles a tile click event. This is the main interaction entry point.
+	 * <p>
+	 * Logic flow:
+	 * 1. checks for game over.
+	 * 2. Checks if it's the correct player's turn.
+	 * 3. Prevents clicking flagged tiles.
+	 * 4. Handles special tiles (Question, Surprise) with cost/score checks.
+	 * 5. Handles regular tiles (reveal, check for mine).
+	 * </p>
+	 * 
+	 * @param boardNum The board number (1 or 2)
+	 * @param row      Row index
+	 * @param col      Column index
 	 */
 	public void handleTileClick(int boardNum, int row, int col) {
 		if (gameState.isGameOver()) {
@@ -339,6 +351,13 @@ public class GameController {
 		}
 	}
 
+	/**
+	 * Handles toggling a flag on a tile.
+	 * 
+	 * @param boardNum The board number (1 or 2)
+	 * @param row      Row index
+	 * @param col      Column index
+	 */
 	public void handleFlagToggle(int boardNum, int row, int col) {
 		if (gameState.isGameOver()) {
 			return;
@@ -538,6 +557,10 @@ public class GameController {
 	private Thread demoThread;
 	private DemoBot demoBot;
 
+	/**
+	 * Starts the "Play with AI" demo mode.
+	 * Initializes the AI bot as Player 2 and starts the bot thread.
+	 */
 	public void startDemoMode() {
 		// Set names for AI (Player 1 = Human, Player 2 = Bot)
 		view.setPlayerNamesForAI();

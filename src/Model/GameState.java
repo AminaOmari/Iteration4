@@ -619,16 +619,10 @@ public class GameState {
 
 	/**
 	 * Determines the winner based on scores.
-	 */
-	/**
-	 * Determines the winner based on scores.
+	 * Converts remaining lives to bonus points and updates the final game message.
 	 */
 	private void determineWinner() {
 		// Convert remaining hearts to points (heart value = price of a question)
-		// According to the image: "All remaining lives are converted to points. Each
-		// heart is worth the price of a surprise or question."
-		int heartValue = difficulty.getQuestionCount(); // Or use question price from difficulty
-		// Actually, let's use the explicit question cost constant or similar logic
 		int pointsPerHeart = switch (difficulty) {
 			case EASY -> 5;
 			case MEDIUM -> 8;
@@ -636,16 +630,7 @@ public class GameState {
 		};
 
 		int bonusPoints = sharedLives * pointsPerHeart;
-		addScore(bonusPoints); // This adds to shared total and current player, but we need fair distribution
-								// or just total check?
-		// The prompt implies final score calculation.
-		// Since score is shared in this prototype for "Team Rhino" cooperative logic
-		// (mostly),
-		// but individual scores are tracked.
-		// Let's add the bonus to the player who triggered the win, or split it?
-		// "Winning" in this co-op mode usually means the team won.
-		// If competitive, we might need to split.
-		// For now, let's just update the message to reflect the bonus.
+		addScore(bonusPoints);
 
 		gameEndMessage = "Game converted " + sharedLives + " lives to " + bonusPoints + " points!\n";
 

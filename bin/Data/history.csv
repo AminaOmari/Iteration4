@@ -22,3 +22,5 @@ timestamp,player1,player2,player1Score,player2Score,totalScore,difficulty,winner
 2026-01-21 10:00:08,Player 1,AI Bot,18,17,35,EASY,Lost,0
 2026-01-21 11:37:43,A,B,16,22,38,MEDIUM,Lost,0
 2026-01-21 12:54:49,Amina,Katia,8,8,16,EASY,Lost,0
+2026-01-21 13:04:54,A,B,-13,16,3,MEDIUM,Lost,0
+2026-01-21 13:08:11,Ali,Ossama,9,8,17,HARD,Lost,0
