@@ -702,7 +702,7 @@ public class GameView extends JFrame {
 		minesLabel.setFont(new Font("Segoe UI", Font.BOLD, 16));
 		minesLabel.setForeground(Color.LIGHT_GRAY);
 
-		rulesBtn = new JButton("Rules");
+		JButton rulesBtn = new JButton("Rules");
 		styleButton(rulesBtn, new Color(70, 70, 90));
 		rulesBtn.setPreferredSize(new Dimension(80, 35));
 		rulesBtn.addActionListener(e -> showGameRules());
