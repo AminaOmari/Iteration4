@@ -590,12 +590,16 @@ public class GameState {
 		if (board1Complete || board2Complete) {
 			gameOver = true;
 			gameWon = true;
+
+			// If both are somehow complete at same time, or just logic
 			if (board1Complete && board2Complete) {
 				determineWinner();
 			} else if (board1Complete) {
-				gameEndMessage = player1.getName() + " cleared their board first! Final Score: " + totalScore;
+				gameEndMessage = player1.getName() + " cleared their board!";
+				determineWinner(); // Calculate final scores anyway
 			} else {
-				gameEndMessage = player2.getName() + " cleared their board first! Final Score: " + totalScore;
+				gameEndMessage = player2.getName() + " cleared their board!";
+				determineWinner();
 			}
 			notifyGameOver(true, gameEndMessage);
 		}

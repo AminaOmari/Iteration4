@@ -551,8 +551,8 @@ public class Board {
 					int flaggedCount = 0;
 
 					for (Tile n : neighbors) {
-						if (n.isFlagged()) {
-							flaggedCount++;
+						if (n.isFlagged() || (n.isMine() && n.isRevealed())) {
+							flaggedCount++; // Count flagged OR found mines
 						} else if (!n.isRevealed()) {
 							unrevealed.add(n);
 						}
@@ -563,16 +563,16 @@ public class Board {
 
 					int mineCount = tile.getAdjacentMines();
 
-					// Rule 1: If flagged count equals mine count, all other unrevealed neighbors
-					// are safe
+					// Rule 1: If handled mines (flags/found) equals total mine count, all other
+					// unrevealed neighbors are safe
 					if (flaggedCount == mineCount) {
 						Tile safeTile = unrevealed.get(0);
 						return new Hint(safeTile.getRow(), safeTile.getCol(), false,
 								"Safe! All mines around (" + row + "," + col + ") are accounted for.");
 					}
 
-					// Rule 2: If unrevealed count + flagged count equals mine count, all unrevealed
-					// are mines
+					// Rule 2: If unrevealed count + handled mines equals total mine count, all
+					// unrevealed are mines
 					if (unrevealed.size() + flaggedCount == mineCount) {
 						Tile mineTile = unrevealed.get(0);
 						return new Hint(mineTile.getRow(), mineTile.getCol(), true,
@@ -582,5 +582,20 @@ public class Board {
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * Checks if every tile on the board is either revealed or flagged.
+	 */
+	public boolean isFullyCovered() {
+		for (int row = 0; row < size; row++) {
+			for (int col = 0; col < size; col++) {
+				Tile tile = tiles[row][col];
+				if (!tile.isRevealed() && !tile.isFlagged()) {
+					return false;
+				}
+			}
+		}
+		return true;
 	}
 }

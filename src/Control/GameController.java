@@ -509,6 +509,19 @@ public class GameController {
 			return;
 		}
 
+		// Turn Check: Ensure the question belongs to the current player
+		List<QuestionTile> currentPending = gameState.getCurrentPlayerPendingQuestions();
+		if (!currentPending.contains(questionTile)) {
+			view.showMessage("Not your turn! This question belongs to the other player.");
+			return;
+		}
+
+		// Score Check: Cannot answer pending questions if score is negative
+		if (gameState.getCurrentPlayer().getScore() < 0) {
+			view.showMessage("Cannot open pending questions with negative score!");
+			return;
+		}
+
 		Question question = questionTile.getQuestion();
 		if (question == null) {
 			view.showMessage("No question available!");

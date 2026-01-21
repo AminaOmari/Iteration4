@@ -25,3 +25,7 @@ timestamp,player1,player2,player1Score,player2Score,totalScore,difficulty,winner
 2026-01-21 13:04:54,A,B,-13,16,3,MEDIUM,Lost,0
 2026-01-21 13:08:11,Ali,Ossama,9,8,17,HARD,Lost,0
 2026-01-21 13:57:00,S,A,14,23,37,MEDIUM,Lost,0
+2026-01-21 14:59:43,A1,A2,21,12,33,MEDIUM,Lost,0
+2026-01-21 15:02:05,A1,A2,14,11,25,HARD,Lost,0
+2026-01-21 15:13:33,Nishan,Julia,22,42,64,EASY,Won,7
+2026-01-21 15:19:14,Nora,Maram,-3,9,6,MEDIUM,Lost,0
