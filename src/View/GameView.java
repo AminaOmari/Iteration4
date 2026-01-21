@@ -6,8 +6,11 @@ import Control.GameController;
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
+
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 /**
  * Main view class for the MineSweeper game. Handles all GUI components and user
@@ -702,15 +705,15 @@ public class GameView extends JFrame {
 		minesLabel.setFont(new Font("Segoe UI", Font.BOLD, 16));
 		minesLabel.setForeground(Color.LIGHT_GRAY);
 
-		JButton rulesBtn = new JButton("Rules");
+		JButton rulesBtn = new JButton("📜 Rules");
 		styleButton(rulesBtn, new Color(70, 70, 90));
-		rulesBtn.setPreferredSize(new Dimension(80, 35));
+		rulesBtn.setPreferredSize(new Dimension(100, 35));
 		rulesBtn.addActionListener(e -> showGameRules());
 
-		JButton hintBtn = new JButton("Hint");
+		JButton hintBtn = new JButton("💡 Hint");
 		styleButton(hintBtn, new Color(200, 160, 0)); // Goldish
 		hintBtn.setForeground(Color.BLACK);
-		hintBtn.setPreferredSize(new Dimension(80, 35));
+		hintBtn.setPreferredSize(new Dimension(100, 35));
 		hintBtn.addActionListener(e -> {
 			if (controller != null)
 				controller.requestHint();
@@ -1782,7 +1785,27 @@ public class GameView extends JFrame {
 		btn.setBackground(bgColor);
 		btn.setForeground(Color.WHITE);
 		btn.setFocusPainted(false);
-		btn.setFont(new Font("Segoe UI", Font.BOLD, 12));
-		btn.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+		btn.setFont(new Font("Segoe UI", Font.BOLD, 13));
+		btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		btn.setOpaque(true);
+		btn.setBorderPainted(true);
+
+		// distinct border
+		btn.setBorder(BorderFactory.createCompoundBorder(
+				BorderFactory.createLineBorder(new Color(255, 255, 255, 150), 1),
+				BorderFactory.createEmptyBorder(5, 15, 5, 15)));
+
+		// Hover effect
+		btn.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				btn.setBackground(bgColor.brighter());
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				btn.setBackground(bgColor);
+			}
+		});
 	}
 }
