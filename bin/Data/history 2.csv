@@ -29,4 +29,3 @@ timestamp,player1,player2,player1Score,player2Score,totalScore,difficulty,winner
 2026-01-21 15:02:05,A1,A2,14,11,25,HARD,Lost,0
 2026-01-21 15:13:33,Nishan,Julia,22,42,64,EASY,Won,7
 2026-01-21 15:19:14,Nora,Maram,-3,9,6,MEDIUM,Lost,0
-2026-01-25 10:05:13,A,A2,9,17,26,MEDIUM,Lost,0

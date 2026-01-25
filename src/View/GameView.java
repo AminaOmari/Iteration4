@@ -1492,7 +1492,7 @@ public class GameView extends JFrame {
 
 				+ "<h3 style='color: #F1FA8C; margin-bottom: 5px;'>⭐ Scoring (Easy/Med/Hard)</h3>"
 				+ "<ul>"
-				+ "<li><b>Safe Reveal:</b> +10 points</li>"
+				+ "<li><b>Safe Reveal:</b> +1 points</li>"
 				+ "<li><b>Activation Cost:</b> -5 / 8 / 12 pts</li>"
 				+ "<li><b>Surprise Effect:</b> ±8 / 12 / 16 pts</li>"
 				+ "<li><b>Correct Answer:</b> Bonus points!</li>"
