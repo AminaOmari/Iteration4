@@ -64,7 +64,7 @@ public class ChatPanel extends JPanel {
         header.setBorder(new EmptyBorder(10, 10, 10, 10));
 
         JLabel title = new JLabel("💬 Team Chat");
-        title.setFont(new Font("Segoe UI", Font.BOLD, 16));
+        title.setFont(GameView.getEmojiFont().deriveFont(Font.BOLD, 16f));
         title.setForeground(Color.WHITE);
         header.add(title, BorderLayout.CENTER);
 
@@ -115,7 +115,7 @@ public class ChatPanel extends JPanel {
         sendBtn.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10)); // Add padding
         // sendBtn.setBorderPainted(false); // Can keep false if opaque/content filled
         // handles it nicely
-        sendBtn.setFont(new Font("Segoe UI", Font.BOLD, 16));
+        sendBtn.setFont(GameView.getEmojiFont().deriveFont(Font.BOLD, 16f));
         sendBtn.addActionListener(e -> sendMessage());
 
         inputPanel.add(inputField, BorderLayout.CENTER);
@@ -128,7 +128,7 @@ public class ChatPanel extends JPanel {
 
     private JButton createQuickButton(String label, String message) {
         JButton btn = new JButton(label);
-        btn.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+        btn.setFont(GameView.getEmojiFont().deriveFont(Font.PLAIN, 11f));
         btn.setBackground(new Color(50, 45, 75));
         btn.setForeground(Color.WHITE);
         btn.setFocusPainted(false);
@@ -169,7 +169,9 @@ public class ChatPanel extends JPanel {
         nameLbl.setFont(new Font("Segoe UI", Font.BOLD, 10));
         nameLbl.setForeground(new Color(230, 230, 230));
 
-        JLabel msgLbl = new JLabel("<html><body style='width: 500px'>" + message + "</body></html>");
+        JLabel msgLbl = new JLabel(
+                "<html><body style='width: 500px; font-family: \"Segoe UI Emoji\", \"Segoe UI\", sans-serif;'>"
+                        + message + "</body></html>");
         msgLbl.setFont(new Font("Segoe UI", Font.PLAIN, 13));
         msgLbl.setForeground(TEXT_COLOR);
 

@@ -149,13 +149,14 @@ public class GameView extends JFrame {
 
 		// Fix for Emojis on Windows - use Segoe UI Emoji if available, else Dialog
 		// This helper helps ensure a font that can render Unicode is picked
-		Font emojiFont = getEmojiFont().deriveFont(Font.BOLD, 26);
+		// Font emojiFont = getEmojiFont().deriveFont(Font.BOLD, 26); <-- Removed usage
+		// of local var
 		JPanel header = new JPanel(new BorderLayout());
 		header.setOpaque(false);
 		header.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 40));
 
 		JLabel logo = new JLabel("💣 MineSweeper - Team Rhino 🦏");
-		logo.setFont(emojiFont);
+		logo.setFont(getEmojiFont().deriveFont(Font.BOLD, 26f));
 		logo.setForeground(Color.WHITE);
 		header.add(logo, BorderLayout.WEST);
 
@@ -267,32 +268,32 @@ public class GameView extends JFrame {
 
 		// Labels for info panel
 		JLabel dTitle = new JLabel("Select Level");
-		dTitle.setFont(new Font("Segoe UI", Font.BOLD, 24));
+		dTitle.setFont(getEmojiFont().deriveFont(Font.BOLD, 24f));
 		dTitle.setForeground(Color.WHITE);
 		dTitle.setAlignmentX(Component.LEFT_ALIGNMENT);
 
 		JLabel dBoard = new JLabel("✏ Board size: -");
-		dBoard.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		dBoard.setFont(getEmojiFont().deriveFont(Font.PLAIN, 16f));
 		dBoard.setForeground(Color.WHITE);
 		dBoard.setAlignmentX(Component.LEFT_ALIGNMENT);
 
 		JLabel dMines = new JLabel("💣 Mines: -");
-		dMines.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		dMines.setFont(getEmojiFont().deriveFont(Font.PLAIN, 16f));
 		dMines.setForeground(Color.WHITE);
 		dMines.setAlignmentX(Component.LEFT_ALIGNMENT);
 
 		JLabel dLives = new JLabel("♥ Starting lives: -");
-		dLives.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		dLives.setFont(getEmojiFont().deriveFont(Font.PLAIN, 16f));
 		dLives.setForeground(Color.WHITE);
 		dLives.setAlignmentX(Component.LEFT_ALIGNMENT);
 
 		JLabel dContent = new JLabel("📦 Content: -");
-		dContent.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		dContent.setFont(getEmojiFont().deriveFont(Font.PLAIN, 16f));
 		dContent.setForeground(Color.WHITE);
 		dContent.setAlignmentX(Component.LEFT_ALIGNMENT);
 
 		JLabel dRules = new JLabel("⚖ Cost: -");
-		dRules.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		dRules.setFont(getEmojiFont().deriveFont(Font.PLAIN, 16f));
 		dRules.setForeground(Color.WHITE);
 		dRules.setAlignmentX(Component.LEFT_ALIGNMENT);
 
@@ -384,7 +385,7 @@ public class GameView extends JFrame {
 		gbc.gridy++;
 		gbc.insets = new Insets(15, 0, 10, 0);
 		startButton = createGradientButton("▷ Start Game", new Color(170, 40, 180), new Color(200, 60, 210));
-		startButton.setFont(new Font("Segoe UI", Font.BOLD, 18));
+		startButton.setFont(getEmojiFont().deriveFont(Font.BOLD, 18f));
 		startButton.setPreferredSize(new Dimension(200, 65));
 		formCard.add(startButton, gbc);
 
@@ -407,12 +408,12 @@ public class GameView extends JFrame {
 		helpCard.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
 		JLabel helpTitle = new JLabel("◎ How to Play?");
-		helpTitle.setFont(new Font("Segoe UI", Font.BOLD, 18));
+		helpTitle.setFont(getEmojiFont().deriveFont(Font.BOLD, 18f));
 		helpTitle.setForeground(Color.WHITE);
 		helpCard.add(helpTitle, BorderLayout.NORTH);
 
 		JLabel helpText = new JLabel(
-				"<html><body style='width: 300px; color: #E0E0E0; font-family: Segoe UI; font-size: 13px; margin-top: 10px;'>"
+				"<html><body style='width: 300px; color: #E0E0E0; font-family: \"Segoe UI Emoji\", \"Segoe UI\", sans-serif; font-size: 13px; margin-top: 10px;'>"
 						+
 						"<div style='margin-bottom: 8px;'><b>🎯 Goal:</b> Reveal all cells without hitting mines</div>"
 						+
@@ -434,7 +435,7 @@ public class GameView extends JFrame {
 		legendCard.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
 		JLabel legendTitle = new JLabel("⚡ Cell Types");
-		legendTitle.setFont(new Font("Segoe UI", Font.BOLD, 18));
+		legendTitle.setFont(getEmojiFont().deriveFont(Font.BOLD, 18f));
 		legendTitle.setForeground(Color.WHITE);
 		legendCard.add(legendTitle, BorderLayout.NORTH);
 
@@ -493,7 +494,7 @@ public class GameView extends JFrame {
 	// --- Helper Methods ---
 	private JButton createNavButton(String text, boolean active) {
 		JButton btn = new JButton(text);
-		btn.setFont(new Font("Segoe UI", Font.BOLD, 14));
+		btn.setFont(getEmojiFont().deriveFont(Font.BOLD, 14f));
 		btn.setForeground(active ? Color.WHITE : new Color(180, 180, 180));
 		btn.setBackground(active ? new Color(100, 50, 150) : new Color(0, 0, 0, 0));
 		btn.setFocusPainted(false);
@@ -553,7 +554,7 @@ public class GameView extends JFrame {
 		p.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		JLabel t = new JLabel(title);
 		t.setForeground(Color.WHITE);
-		t.setFont(new Font("Segoe UI", Font.BOLD, 14));
+		t.setFont(getEmojiFont().deriveFont(Font.BOLD, 14f));
 		JLabel d = new JLabel(desc);
 		d.setForeground(new Color(200, 200, 200));
 		d.setFont(new Font("Segoe UI", Font.PLAIN, 12));
@@ -668,7 +669,7 @@ public class GameView extends JFrame {
 		scorePanel.setOpaque(false);
 
 		totalScoreLabel = new JLabel("⭐ Team Score: 0");
-		totalScoreLabel.setFont(new Font("Segoe UI", Font.BOLD, 22)); // Larger font
+		totalScoreLabel.setFont(getEmojiFont().deriveFont(Font.BOLD, 22f)); // Larger font
 		totalScoreLabel.setForeground(new Color(255, 215, 0)); // Gold
 
 		player1ScoreLabel = new JLabel("A: 0");
@@ -699,20 +700,23 @@ public class GameView extends JFrame {
 		statsPanel.setOpaque(false);
 
 		livesLabel = new JLabel("Lives: 5");
-		livesLabel.setFont(new Font("Segoe UI", Font.BOLD, 16));
+		livesLabel.setFont(getEmojiFont().deriveFont(Font.BOLD, 16f));
 		livesLabel.setForeground(Color.WHITE);
 
 		minesLabel = new JLabel("💣 Mines: 0");
-		minesLabel.setFont(new Font("Segoe UI", Font.BOLD, 16));
+		minesLabel.setFont(getEmojiFont().deriveFont(Font.BOLD, 16f));
 		minesLabel.setForeground(Color.LIGHT_GRAY);
 
 		JButton rulesBtn = new JButton("📜 Rules");
 		styleButton(rulesBtn, new Color(70, 70, 90));
+		rulesBtn.setFont(getEmojiFont().deriveFont(Font.BOLD, 13f)); // Ensure styleButton doesn't overwrite or we set
+																		// it back
 		rulesBtn.setPreferredSize(new Dimension(100, 35));
 		rulesBtn.addActionListener(e -> showGameRules());
 
 		JButton hintBtn = new JButton("🤖 Hint");
 		styleButton(hintBtn, new Color(200, 160, 0)); // Goldish
+		hintBtn.setFont(getEmojiFont().deriveFont(Font.BOLD, 13f));
 		hintBtn.setForeground(Color.BLACK);
 		hintBtn.setPreferredSize(new Dimension(100, 35));
 		hintBtn.addActionListener(e -> {
@@ -746,7 +750,7 @@ public class GameView extends JFrame {
 
 		// Initialize messageLabel here to prevent NPE
 		messageLabel = createStatusLabel(" "); // Start empty or with welcome
-		messageLabel.setFont(new Font("Segoe UI", Font.BOLD, 14));
+		messageLabel.setFont(getEmojiFont().deriveFont(Font.BOLD, 14f));
 		messageLabel.setForeground(new Color(255, 230, 0));
 		messageLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
@@ -1475,7 +1479,7 @@ public class GameView extends JFrame {
 		contentHost.setOpaque(false);
 		contentHost.setBorder(BorderFactory.createEmptyBorder(0, 30, 20, 30));
 
-		String htmlContent = "<html><body style='width: 350px; font-family: Segoe UI; color: #E0E0E0; font-size: 14px; line-height: 1.5;'>"
+		String htmlContent = "<html><body style='width: 350px; font-family: \"Segoe UI Emoji\", \"Segoe UI\", sans-serif; color: #E0E0E0; font-size: 14px; line-height: 1.5;'>"
 				+ "<h3 style='color: #FF79C6; margin-bottom: 5px;'>🎯 Objective</h3>"
 				+ "Reveal all safe tiles without hitting mines. Work together!"
 				+ "<br><br>"
@@ -1765,10 +1769,20 @@ public class GameView extends JFrame {
 	}
 
 	/**
-	 * Shows a standard blocking dialog.
+	 * Shows a standard blocking dialog with emoji support.
 	 */
 	public void showDialog(String message, String title, int messageType) {
-		JOptionPane.showMessageDialog(this, message, title, messageType);
+		JTextArea textArea = new JTextArea(message);
+		textArea.setFont(getEmojiFont().deriveFont(Font.PLAIN, 14f));
+		textArea.setEditable(false);
+		textArea.setOpaque(false);
+		textArea.setBackground(new Color(0, 0, 0, 0)); // Transparent
+		// Ensure it wraps if too wide (optional, but good for safety)
+		textArea.setLineWrap(true);
+		textArea.setWrapStyleWord(true);
+		textArea.setSize(new Dimension(400, 1)); // Width hint
+
+		JOptionPane.showMessageDialog(this, textArea, title, messageType);
 	}
 
 	/**
@@ -1776,7 +1790,13 @@ public class GameView extends JFrame {
 	 * Used for AI turns to avoid blocking the game loop indefinitely.
 	 */
 	public void showAutoClosingMessage(String message, String title, int messageType, int timeoutMs) {
-		JOptionPane pane = new JOptionPane(message, messageType);
+		JTextArea textArea = new JTextArea(message);
+		textArea.setFont(getEmojiFont().deriveFont(Font.PLAIN, 14f));
+		textArea.setEditable(false);
+		textArea.setOpaque(false);
+		textArea.setBackground(new Color(0, 0, 0, 0));
+
+		JOptionPane pane = new JOptionPane(textArea, messageType);
 		JDialog dialog = pane.createDialog(this, title);
 		dialog.setModal(false); // Non-modal so it doesn't block EDT completely if we want async
 		// However, with invokeLater logic in bot, we might want it to block "briefly"
@@ -1831,11 +1851,9 @@ public class GameView extends JFrame {
 			if (fontName.equalsIgnoreCase("Segoe UI Emoji")) {
 				return new Font("Segoe UI Emoji", Font.PLAIN, 12);
 			}
-			if (fontName.equalsIgnoreCase("Apple Color Emoji")) {
-				return new Font("Apple Color Emoji", Font.PLAIN, 12);
-			}
 		}
 		// Fallback to Dialog which usually handles unicode better than "Segoe UI" base
+		// On macOS, Dialog/SansSerif handles emojis correctly automatically.
 		return new Font("Dialog", Font.PLAIN, 12);
 	}
 }

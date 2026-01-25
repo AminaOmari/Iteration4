@@ -110,7 +110,7 @@ public class TriviaDialog extends JDialog {
 
 		// Category/Topic label
 		JLabel categoryLabel = new JLabel("💡 Software Engineering");
-		categoryLabel.setFont(new Font("Arial", Font.PLAIN, 14));
+		categoryLabel.setFont(GameView.getEmojiFont().deriveFont(Font.PLAIN, 14f));
 		categoryLabel.setForeground(new Color(200, 200, 220));
 
 		topPanel.add(difficultyLabel);
@@ -169,7 +169,7 @@ public class TriviaDialog extends JDialog {
 
 			String optionText = (i + 1) + ". " + question.getOption(answerNum);
 			btn.setText("<html><div style='padding:5px'>" + optionText + "</div></html>");
-			btn.setFont(new Font("Arial", Font.PLAIN, 15));
+			btn.setFont(GameView.getEmojiFont().deriveFont(Font.PLAIN, 15f));
 			btn.setBackground(new Color(60, 50, 90));
 			btn.setForeground(Color.WHITE);
 			btn.setFocusPainted(false);
@@ -222,7 +222,7 @@ public class TriviaDialog extends JDialog {
 		bottomPanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 15, 0));
 
 		JButton saveBtn = new JButton("💾 Save for Later");
-		saveBtn.setFont(new Font("Arial", Font.PLAIN, 14));
+		saveBtn.setFont(GameView.getEmojiFont().deriveFont(Font.PLAIN, 14f));
 		saveBtn.setBackground(new Color(100, 100, 120));
 		saveBtn.setForeground(Color.WHITE);
 		saveBtn.setFocusPainted(false);
