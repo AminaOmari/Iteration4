@@ -17,7 +17,6 @@ import java.util.List;
  * activate immediately on first click.
  *
  * @author Team Rhino
- * @version 3.2 - One-click activation
  */
 public class GameController {
 	private GameState gameState;

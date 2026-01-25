@@ -109,7 +109,12 @@ public class ChatPanel extends JPanel {
         sendBtn.setBackground(new Color(100, 80, 160));
         sendBtn.setForeground(Color.WHITE);
         sendBtn.setFocusPainted(false);
-        sendBtn.setBorderPainted(false);
+        // Windows Fix
+        sendBtn.setOpaque(true);
+        sendBtn.setContentAreaFilled(true);
+        sendBtn.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10)); // Add padding
+        // sendBtn.setBorderPainted(false); // Can keep false if opaque/content filled
+        // handles it nicely
         sendBtn.setFont(new Font("Segoe UI", Font.BOLD, 16));
         sendBtn.addActionListener(e -> sendMessage());
 
@@ -127,7 +132,12 @@ public class ChatPanel extends JPanel {
         btn.setBackground(new Color(50, 45, 75));
         btn.setForeground(Color.WHITE);
         btn.setFocusPainted(false);
-        btn.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        // Windows Fix: Ensure background is painted
+        btn.setOpaque(true);
+        btn.setContentAreaFilled(true);
+        btn.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(70, 70, 100)),
+                BorderFactory.createEmptyBorder(5, 10, 5, 10)));
         btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btn.addActionListener(e -> {
             addMessage(isPlayer1Turn ? player1Name : player2Name, message, isPlayer1Turn);

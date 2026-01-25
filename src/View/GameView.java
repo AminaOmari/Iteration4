@@ -147,13 +147,15 @@ public class GameView extends JFrame {
 			}
 		};
 
-		// 1. Header Navigation
+		// Fix for Emojis on Windows - use Segoe UI Emoji if available, else Dialog
+		// This helper helps ensure a font that can render Unicode is picked
+		Font emojiFont = getEmojiFont().deriveFont(Font.BOLD, 26);
 		JPanel header = new JPanel(new BorderLayout());
 		header.setOpaque(false);
 		header.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 40));
 
 		JLabel logo = new JLabel("💣 MineSweeper - Team Rhino 🦏");
-		logo.setFont(new Font("Segoe UI", Font.BOLD, 26));
+		logo.setFont(emojiFont);
 		logo.setForeground(Color.WHITE);
 		header.add(logo, BorderLayout.WEST);
 
@@ -1027,7 +1029,14 @@ public class GameView extends JFrame {
 		btn.setFocusPainted(false);
 		// Raised Bevel Border gives a nice "clickable button" 3D look
 		btn.setBorder(BorderFactory.createRaisedBevelBorder());
+		btn.setFocusPainted(false);
+		// Raised Bevel Border gives a nice "clickable button" 3D look
+		btn.setBorder(BorderFactory.createRaisedBevelBorder());
 		btn.setMargin(new Insets(0, 0, 0, 0));
+
+		// WINDOWS FIX: Ensure opacity is true so background color works
+		btn.setOpaque(true);
+		btn.setContentAreaFilled(true); // Needed for Windows L&F to respect background in some cases
 
 		// Add hover effect
 		btn.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -1068,6 +1077,7 @@ public class GameView extends JFrame {
 
 		if (tile.isFlagged()) {
 			btn.setText("🚩");
+			btn.setFont(getEmojiFont().deriveFont(Font.BOLD, 20f)); // Ensure emoji font
 			btn.setBackground(FLAG_COLOR); // Red
 			btn.setForeground(Color.WHITE);
 			btn.setBorder(BorderFactory.createLineBorder(new Color(200, 50, 40), 1));
@@ -1083,6 +1093,7 @@ public class GameView extends JFrame {
 			switch (tileType) {
 				case "MINE":
 					btn.setText("💣");
+					btn.setFont(getEmojiFont().deriveFont(Font.BOLD, 20f));
 					btn.setBackground(MINE_COLOR);
 					btn.setForeground(Color.WHITE);
 					break;
@@ -1094,14 +1105,14 @@ public class GameView extends JFrame {
 						// Dynamically adjust font size to fit. Use floating point division for
 						// precision.
 						int fontSize = Math.max(10, (int) (btn.getWidth() / 2.8));
-						btn.setFont(new Font("Arial", Font.BOLD, fontSize));
+						btn.setFont(getEmojiFont().deriveFont(Font.BOLD, (float) fontSize));
 						btn.setBackground(new Color(180, 180, 80)); // Dimmed gold
 						btn.setForeground(Color.WHITE);
 						btn.setBorder(BorderFactory.createLineBorder(new Color(140, 140, 60), 1));
 					} else {
 						btn.setText("❓"); // Show "Q" for unanswered
 						int fontSize = Math.min(28, (int) (btn.getWidth() / 2.5));
-						btn.setFont(new Font("Arial", Font.BOLD, fontSize));
+						btn.setFont(getEmojiFont().deriveFont(Font.BOLD, (float) fontSize));
 						btn.setBackground(QUESTION_COLOR);
 						btn.setForeground(new Color(20, 20, 20));
 					}
@@ -1114,14 +1125,14 @@ public class GameView extends JFrame {
 						btn.setText("🎁✔"); // S with checkmark for used
 						// Dynamically adjust font size
 						int fontSize = Math.max(10, (int) (btn.getWidth() / 2.8));
-						btn.setFont(new Font("Arial", Font.BOLD, fontSize));
+						btn.setFont(getEmojiFont().deriveFont(Font.BOLD, (float) fontSize));
 						btn.setBackground(new Color(120, 70, 140)); // Dimmed purple (used)
 						btn.setForeground(Color.WHITE);
 						btn.setBorder(BorderFactory.createLineBorder(new Color(90, 50, 110), 1));
 					} else {
 						btn.setText("🎁"); // Show "S" for unused
 						int fontSize = Math.min(28, (int) (btn.getWidth() / 2.5));
-						btn.setFont(new Font("Arial", Font.BOLD, fontSize));
+						btn.setFont(getEmojiFont().deriveFont(Font.BOLD, (float) fontSize));
 						btn.setBackground(SURPRISE_COLOR); // Bright purple (unused)
 						btn.setForeground(Color.WHITE);
 					}
@@ -1806,5 +1817,25 @@ public class GameView extends JFrame {
 				btn.setBackground(bgColor);
 			}
 		});
+	}
+
+	/**
+	 * Returns a font capable of rendering Emojis on Windows.
+	 * Checks for "Segoe UI Emoji", otherwise falls back to logical font used by
+	 * "Dialog".
+	 */
+	public static Font getEmojiFont() {
+		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+		String[] fontNames = ge.getAvailableFontFamilyNames();
+		for (String fontName : fontNames) {
+			if (fontName.equalsIgnoreCase("Segoe UI Emoji")) {
+				return new Font("Segoe UI Emoji", Font.PLAIN, 12);
+			}
+			if (fontName.equalsIgnoreCase("Apple Color Emoji")) {
+				return new Font("Apple Color Emoji", Font.PLAIN, 12);
+			}
+		}
+		// Fallback to Dialog which usually handles unicode better than "Segoe UI" base
+		return new Font("Dialog", Font.PLAIN, 12);
 	}
 }

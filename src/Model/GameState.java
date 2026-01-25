@@ -212,13 +212,26 @@ public class GameState {
 
 	/**
 	 * Handles revealing a safe tile. Awards points based on tile type.
+	 * Default method for 1 tile.
 	 *
 	 * @param tile The revealed tile
 	 * @return Description of what happened
 	 */
 	public String handleSafeReveal(Tile tile) {
+		return handleSafeReveal(tile, 1);
+	}
+
+	/**
+	 * Handles revealing a safe tile with specific count of revealed tiles.
+	 * Awards points based on tile type and count.
+	 *
+	 * @param tile          The revealed tile
+	 * @param revealedCount Number of tiles revealed in this action
+	 * @return Description of what happened
+	 */
+	public String handleSafeReveal(Tile tile, int revealedCount) {
 		String result = "";
-		int scoreChange = 1; // Base points for revealing safe tile
+		int scoreChange = revealedCount; // Points equal to number of tiles revealed
 		int livesChange = 0;
 		boolean shouldSwitchTurn = true;
 
@@ -656,7 +669,10 @@ public class GameState {
 		}
 
 		Board currentBoard = getCurrentBoard();
+		int initialRevealed = currentBoard.getRevealedCount();
 		Tile tile = currentBoard.revealTile(row, col);
+		int finalRevealed = currentBoard.getRevealedCount();
+		int revealedCount = finalRevealed - initialRevealed;
 
 		if (tile == null) {
 			return "Invalid move or tile already revealed.";
@@ -670,7 +686,7 @@ public class GameState {
 			}
 			return getCurrentPlayer().getName() + " hit a mine! Lost 1 life. Lives remaining: " + sharedLives;
 		} else {
-			return handleSafeReveal(tile);
+			return handleSafeReveal(tile, revealedCount);
 		}
 	}
 
