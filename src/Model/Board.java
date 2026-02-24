@@ -173,8 +173,9 @@ public class Board {
 		tile.reveal();
 		revealedCount++;
 
-		// If empty tile with no adjacent mines, reveal neighbors recursively
-		if (tile.isEmpty() && tile.getAdjacentMines() == 0) {
+		// If empty, question, or surprise tile with no adjacent mines, reveal neighbors
+		// recursively
+		if (tile.getAdjacentMines() == 0 && (tile.isEmpty() || tile.isQuestion() || tile.isSurprise())) {
 			revealEmptyNeighbors(row, col);
 		}
 
@@ -209,10 +210,13 @@ public class Board {
 						// mines)."
 						// "It stops when it reaches a tile with a number (1-8), revealing it but not
 						// going further."
-						if (neighbor.getAdjacentMines() == 0 && neighbor.isEmpty()) {
+						// Now includes Question and Surprise tiles if they have 0 adjacent mines.
+						if (neighbor.getAdjacentMines() == 0
+								&& (neighbor.isEmpty() || neighbor.isQuestion() || neighbor.isSurprise())) {
 							revealEmptyNeighbors(newRow, newCol);
 						}
-						// Note: Q/S tiles are now revealed but NOT activated
+						// Note: Q/S tiles are revealed AND may trigger further cascade if they have 0
+						// neighbors
 						// User must click them again to activate (answer question/trigger surprise)
 					}
 				}
@@ -329,8 +333,8 @@ public class Board {
 					revealedCount++;
 					revealed++;
 
-					// If empty tile with no adjacent mines, trigger cascade
-					if (tile.isEmpty() && tile.getAdjacentMines() == 0) {
+					// If empty, question, or surprise tile with no adjacent mines, trigger cascade
+					if (tile.getAdjacentMines() == 0 && (tile.isEmpty() || tile.isQuestion() || tile.isSurprise())) {
 						revealEmptyNeighbors(row, col);
 					}
 				}

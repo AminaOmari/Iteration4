@@ -13,6 +13,8 @@ public class QuestionTile extends Tile {
 	private Question question; // The trivia question for this tile
 	private boolean pendingInList; // Track if this question is in pending list
 
+	private int adjacentMines;
+
 	/**
 	 * Creates a new question tile at the specified position.
 	 * 
@@ -24,6 +26,7 @@ public class QuestionTile extends Tile {
 		this.activated = false;
 		this.question = null;
 		this.pendingInList = false;
+		this.adjacentMines = 0;
 	}
 
 	/**
@@ -120,12 +123,12 @@ public class QuestionTile extends Tile {
 
 	@Override
 	public int getAdjacentMines() {
-		return 0; // Question tiles don't have adjacent mine counts
+		return adjacentMines;
 	}
 
 	@Override
 	public void setAdjacentMines(int count) {
-		// Question tiles don't track adjacent mines
+		this.adjacentMines = count;
 	}
 
 	@Override

@@ -10,6 +10,7 @@ package Model;
  */
 public class SurpriseTile extends Tile {
 	private Surprise surprise; // null until revealed
+	private int adjacentMines;
 
 	/**
 	 * Creates a new surprise tile at the specified position.
@@ -20,6 +21,7 @@ public class SurpriseTile extends Tile {
 	public SurpriseTile(int row, int col) {
 		super(row, col);
 		this.surprise = null;
+		this.adjacentMines = 0;
 	}
 
 	/**
@@ -85,12 +87,12 @@ public class SurpriseTile extends Tile {
 
 	@Override
 	public int getAdjacentMines() {
-		return 0; // Surprise tiles don't have adjacent mine counts
+		return adjacentMines;
 	}
 
 	@Override
 	public void setAdjacentMines(int count) {
-		// Surprise tiles don't track adjacent mines
+		this.adjacentMines = count;
 	}
 
 	@Override
